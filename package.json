@@ -1,5 +1,5 @@
 {
-  "name": "JWT Boilerplate",
+  "name": "mern-boilerplate",
   "version": "1.0.0",
   "description": "Node.js JWT Authentication boilerplate with input validation.",
   "main": "server.js",
