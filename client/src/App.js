@@ -1,8 +1,9 @@
 import React from "react";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { BrowserRouter as Router, Route } from "react-router-dom";
 import { Provider } from "react-redux";
 import Home from "./components/Home/index";
 import Header from "./components/Header/index";
+import SearchResults from "./components/SearchResults/index";
 import store from "./redux/store";
 
 function App() {
@@ -11,7 +12,8 @@ function App() {
       <Router>
         <div className="App">
           <Header />
-          <Route path="/" component={Home} />
+          <Route path="/" component={Home} exact />
+          <Route path="/searchResults" component={SearchResults} />
         </div>
       </Router>
     </Provider>

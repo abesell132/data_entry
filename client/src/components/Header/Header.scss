@@ -1,0 +1,37 @@
+header {
+  height: 80px;
+  width: 100%;
+}
+
+header {
+  .header-container {
+    max-width: 1400px;
+    height: 100%;
+    margin: 0 auto;
+    line-height: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .header-container .logo a {
+    font-family: "Grandstander";
+    font-size: 30px;
+    text-decoration: none;
+    color: #ff4757;
+  }
+  #header-menu {
+    list-style-type: none;
+    font-size: 14px;
+    display: flex;
+  }
+  #header-menu li {
+    margin: 0 5px;
+    color: #2f3542;
+    font-weight: 600;
+  }
+  #header-menu li:hover {
+    color: #ff4757;
+    cursor: pointer;
+  }
+}
