@@ -1,10 +1,17 @@
 import React, { Component } from "react";
-import "./Home.scss";
+import ActionsContainer from "../ActionsContainer/ActionsContainer";
+import VariblesContainer from "../VariablesContainer/VariablesContainer";
+import "./Script.scss";
 import { connect } from "react-redux";
 
 class Home extends Component {
   render() {
-    return <div class="Home">Home</div>;
+    return (
+      <div class="Script">
+        <VariblesContainer />
+        <ActionsContainer />
+      </div>
+    );
   }
 }
 

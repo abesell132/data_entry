@@ -1,0 +1,51 @@
+#Home {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: calc(100vh - 71px);
+  background: #ecf0f1;
+
+  #container {
+    width: 1000px;
+    border-radius: 8px;
+    padding: 20px;
+    background: white;
+
+    #header {
+      padding: 0px 5px 15px;
+      border-bottom: 1px solid #ecf0f1;
+      margin-bottom: 10px;
+    }
+    #script-list {
+      min-height: 250px;
+
+      .script {
+        padding: 12.5px 20px;
+        background: #f3f3f3;
+        margin: 5px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        .delete-button {
+          height: 30px;
+          width: 30px;
+          border-radius: 100%;
+          background: #d3d3d3;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+      }
+      .script:hover {
+        background: #eaeaea;
+      }
+    }
+    .noscript {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+}

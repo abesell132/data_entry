@@ -1,0 +1,49 @@
+.command-select {
+  #popup-container {
+    display: inline-block;
+    width: 25vw;
+    height: 50vh;
+    padding: 30px 20px;
+  }
+
+  #popup-content {
+    display: flex;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+  #popup-content > div {
+    border: 1px solid #ddd;
+    height: 50px;
+    box-sizing: border-box;
+    max-width: 50%;
+    padding: 10px;
+    border-radius: 4px;
+    margin: 5px;
+    min-width: calc(50% - 10px);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+  }
+  #popup-content > div:hover {
+    background: #f8f8f8;
+  }
+
+  .action-question-mark {
+    width: 22px;
+    height: 22px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    cursor: pointer;
+    background: #eee;
+  }
+  .action-question-mark img {
+    width: 12px;
+    opacity: 50%;
+  }
+  .action-question-mark:hover img {
+    opacity: 80%;
+  }
+}

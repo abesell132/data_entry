@@ -1,0 +1,16 @@
+.Script {
+  height: calc(100vh - 70px);
+  display: flex;
+
+  .variables {
+    height: 100%;
+    width: 20vw;
+    max-width: 20vw;
+    background: #f7f7f7;
+    border-right: 1px solid #ddd;
+  }
+  .actions {
+    height: 100%;
+    width: 80vw;
+  }
+}

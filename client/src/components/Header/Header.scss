@@ -1,0 +1,43 @@
+header {
+  border-bottom: 1px solid #ddd;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  .container {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+    .navigation {
+      span {
+        padding: 0 1vw;
+        cursor: pointer;
+        color: #3498db;
+        font-size: 18px;
+      }
+      span:hover {
+        color: #2980b9;
+      }
+    }
+    #log-out {
+      color: #3498db;
+      font-size: 18px;
+    }
+    #login-register {
+      color: #3498db;
+      font-size: 18px;
+      span {
+        padding: 0 10px;
+      }
+    }
+  }
+}
+
+header .title {
+  font-family: "Exo 2", cursive;
+  font-size: 30px;
+  line-height: 1;
+  padding-bottom: 6px;
+  color: #3298db;
+}

@@ -1,0 +1,39 @@
+.new-script {
+  #popup-container {
+    display: inline-block;
+    width: 20vw;
+    padding: 30px 20px;
+  }
+
+  #popup-content {
+    display: flex;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    width: 100%;
+
+    h3 {
+      margin-top: 0px;
+    }
+    > div {
+      width: 100%;
+    }
+    form {
+      width: 100%;
+
+      label {
+        display: block;
+        font-size: 14px;
+      }
+      input {
+        width: 100%;
+        background: #ecf0f1;
+        border: none;
+        margin: 5px 0 10px;
+        padding: 10px 10px;
+      }
+      button {
+        font-size: 14px;
+      }
+    }
+  }
+}

@@ -1,0 +1,55 @@
+.action {
+  margin: 0 auto 10px;
+  border-radius: 5px;
+  max-width: 400px;
+  border: 1px solid #ccc;
+}
+.action > div {
+  display: inline-block;
+  font-size: 18px;
+  padding: 10px 15px;
+}
+.action:hover {
+  background: #f7f7f7;
+  cursor: pointer;
+}
+.action .controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.actions .controls > .name {
+  font-size: 16px;
+}
+.actions .controls .delete-command {
+  opacity: 0.5;
+}
+
+.actions .controls .delete-command:hover {
+  opacity: 0.8;
+}
+
+.settings {
+  animation: settingsSlide 0.4s ease-in-out;
+  height: auto;
+  background: #eee;
+  overflow: hidden;
+  padding: 20px;
+}
+.settings * {
+  animation: fadeIn 0.25s ease-in;
+}
+.settings label {
+  display: block;
+  margin-top: 5px;
+  padding-bottom: 5px;
+  font-size: 14px;
+}
+.settings input {
+  width: 100%;
+  border: 1px solid #ddd;
+  font-size: 16px;
+  padding: 10px;
+  box-sizing: border-box;
+  margin-bottom: 10px;
+}
