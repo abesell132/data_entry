@@ -6,7 +6,7 @@ import store from "./redux/store";
 import jwt_decode from "jwt-decode";
 import setAuthToken from "./utils/setAuthToken";
 
-import Script from "./components/Script/index";
+import AppPage from "./components/App/index";
 import Home from "./components/Home/Home";
 import Header from "./components/Header/Header";
 import Register from "./components/Authentication/Register/Register";
@@ -41,7 +41,7 @@ function App() {
           <Popup />
           <Header />
           <Switch>
-            <PrivateRoute path="/script" component={Script} exact />
+            <PrivateRoute path="/app/:id" component={AppPage} />
             <PrivateRoute path="/" component={Home} exact />
           </Switch>
 

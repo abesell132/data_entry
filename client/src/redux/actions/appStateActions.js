@@ -3,7 +3,6 @@ export const togglePopup = () => (dispatch) => {
 };
 
 export const setPopupType = (type) => (dispatch) => {
-  console.log(type);
   dispatch({ type: "SET_POPUP_TYPE", payload: type });
 };
 

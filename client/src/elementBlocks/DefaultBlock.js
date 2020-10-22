@@ -16,6 +16,7 @@ class DefaultBlock extends Component {
     this.deleteBlock = this.deleteBlock.bind(this);
   }
 
+  componentDidMount() {}
   toggleSettings() {
     this.setState({
       showSettings: !this.state.showSettings,
@@ -35,18 +36,18 @@ class DefaultBlock extends Component {
   render() {
     let display = this.state.showSettings ? "block" : "none";
     return (
-      <div class="action" onClick={this.toggleSettings}>
-        <div class="controls">
+      <div className="action" onClick={this.toggleSettings}>
+        <div className="controls">
           <div className="name">{this.props.name}</div>
           <div>
             <img src={GarbageCan} className="delete-command" onClick={this.deleteBlock} alt="Delete Block" />
           </div>
         </div>
-        <div class="settings" onClick={this.stopProp} style={{ display }}>
+        <div className="settings" onClick={this.stopProp} style={{ display }}>
           {this.props.fields.map((field, index) => (
-            <div>
-              <label for={field.slug}>{field.label}</label>
-              <input type={field.type} name={field.slug} value={this.state[field.slug]} onChange={this.onChange} />
+            <div key={index}>
+              {field.label ? <label htmlFor={field.slug}>{field.label}</label> : ""}
+              {field.inputType ? <input type={field.type} name={field.slug} value={this.state[field.slug] ? this.state[field.slug] : field.value} onChange={this.onChange} /> : ""}
             </div>
           ))}
         </div>

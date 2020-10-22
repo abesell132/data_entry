@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { setPopupType, closePopup } from "../../redux/actions/appStateActions";
-import { addCommand, executeCommands } from "../../redux/actions/commandActions";
+import { executeCommands } from "../../redux/actions/commandActions";
+import { saveScript } from "../../redux/actions/scriptActions";
 import Plus from "../../assets/imgs/plus.png";
 import "./index.scss";
 import { connect } from "react-redux";
@@ -10,9 +11,13 @@ class ActionsContainer extends Component {
     super();
     this.openPopup = this.openPopup.bind(this);
     this.executeCommands = this.executeCommands.bind(this);
+    this.saveScript = this.saveScript.bind(this);
   }
   openPopup() {
     this.props.setPopupType("COMMAND_SELECT");
+  }
+  saveScript() {
+    this.props.saveScript(this.props.commands.json, this.props.scripts.currentScript);
   }
   executeCommands() {
     this.props.executeCommands(this.props.commands.json);
@@ -24,7 +29,7 @@ class ActionsContainer extends Component {
           <button id="execute-script" onClick={this.executeCommands}>
             Execute
           </button>
-          <button id="save-script" className="green">
+          <button id="save-script" className="green" onClick={this.saveScript}>
             Save
           </button>
         </div>
@@ -44,11 +49,12 @@ class ActionsContainer extends Component {
 const mapStateToProps = (state) => ({
   appState: state.appState,
   commands: state.commands,
+  scripts: state.scripts,
 });
 
 export default connect(mapStateToProps, {
-  addCommand,
   executeCommands,
   setPopupType,
   closePopup,
+  saveScript,
 })(ActionsContainer);

@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import QuestionMark from "../../../assets/imgs/question-mark.png";
 import { connect } from "react-redux";
 import { closePopup } from "../../../redux/actions/appStateActions";
-import { addCommand } from "../../../redux/actions/commandActions";
+import { addCommands } from "../../../redux/actions/commandActions";
 import "./css/CommandSelect.scss";
 
 class CommandSelect extends Component {
@@ -18,8 +18,8 @@ class CommandSelect extends Component {
   stopProp(e) {
     e.stopPropagation();
   }
-  onClick(type) {
-    this.props.addCommand(type);
+  onClick(command) {
+    this.props.addCommands([command]);
     this.props.closePopup();
   }
   render() {
@@ -27,37 +27,37 @@ class CommandSelect extends Component {
       <div id="popup" className="command-select" onClick={this.closePopup}>
         <div id="popup-container" onClick={this.stopProp}>
           <div id="popup-content">
-            <div onClick={() => this.onClick("CLICK")}>
+            <div onClick={() => this.onClick({ type: "CLICK", selector: "" })}>
               <div>Click</div>
               <div className="action-question-mark">
                 <img src={QuestionMark} alt="More Information" />
               </div>
             </div>
-            <div onClick={() => this.onClick("LOAD_URL")}>
+            <div onClick={() => this.onClick({ type: "LOAD_URL", url: "" })}>
               <div>Load Url</div>
               <div className="action-question-mark">
                 <img src={QuestionMark} alt="More Information" />
               </div>
             </div>
-            <div onClick={() => this.onClick("SCREENSHOT")}>
+            <div onClick={() => this.onClick({ type: "SCREENSHOT", file_name: "" })}>
               <div>Screenshot</div>
               <div className="action-question-mark">
                 <img src={QuestionMark} alt="More Information" />
               </div>
             </div>
-            <div onClick={() => this.onClick("SET_TIMEOUT")}>
+            <div onClick={() => this.onClick({ type: "SET_TIMEOUT", duration: "" })}>
               <div>Set Timeout</div>
               <div className="action-question-mark">
                 <img src={QuestionMark} alt="More Information" />
               </div>
             </div>
-            <div onClick={() => this.onClick("SUBMIT_FORM")}>
+            <div onClick={() => this.onClick({ type: "SUBMIT_FORM", selector: "" })}>
               <div>Submit Form</div>
               <div className="action-question-mark">
                 <img src={QuestionMark} alt="More Information" />
               </div>
             </div>
-            <div onClick={() => this.onClick("TYPE")}>
+            <div onClick={() => this.onClick({ type: "TYPE", selector: "", text: "" })}>
               <div>Type</div>
               <div className="action-question-mark">
                 <img src={QuestionMark} alt="More Information" />
@@ -78,4 +78,4 @@ const mapStateToProps = (state) => ({
   commands: state.commands,
 });
 
-export default connect(mapStateToProps, { closePopup, addCommand })(CommandSelect);
+export default connect(mapStateToProps, { closePopup, addCommands })(CommandSelect);

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { closePopup } from "../../../redux/actions/appStateActions";
-import { addCommand } from "../../../redux/actions/commandActions";
+import { addScript } from "../../../redux/actions/scriptActions";
 import "./css/NewScript.scss";
 
 class NewScript extends Component {
@@ -12,8 +12,8 @@ class NewScript extends Component {
     };
     this.closePopup = this.closePopup.bind(this);
     this.stopProp = this.stopProp.bind(this);
-    this.onClick = this.onClick.bind(this);
     this.onChange = this.onChange.bind(this);
+    this.onSubmit = this.onSubmit.bind(this);
   }
   closePopup() {
     this.props.closePopup();
@@ -21,14 +21,14 @@ class NewScript extends Component {
   stopProp(e) {
     e.stopPropagation();
   }
-  onClick(type) {
-    this.props.addCommand(type);
-    this.props.closePopup();
-  }
+
   onChange(e) {
     this.setState({
       [e.target.name]: e.target.value,
     });
+  }
+  onSubmit() {
+    this.props.addScript(this.state.scriptname);
   }
   render() {
     return (
@@ -40,7 +40,7 @@ class NewScript extends Component {
               <form>
                 <label>Script Name</label>
                 <input type="text" placeholder="Example Script Name" value={this.state.scriptname} onChange={this.onChange} name="scriptname" />
-                <button>Add Script</button>
+                <button onClick={this.onSubmit}>Add Script</button>
               </form>
             </div>
           </div>
@@ -58,4 +58,4 @@ const mapStateToProps = (state) => ({
   commands: state.commands,
 });
 
-export default connect(mapStateToProps, { closePopup, addCommand })(NewScript);
+export default connect(mapStateToProps, { closePopup, addScript })(NewScript);

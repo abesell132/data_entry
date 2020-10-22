@@ -21,8 +21,6 @@ class Login extends Component {
   }
   shouldComponentUpdate(nextProps, nextState) {
     if (this.props.auth.isAuthenticated || nextProps.auth.isAuthenticated) {
-      // this.fetchData(this.props.userID)
-      console.log(this.props.auth.isAuthenticated);
       this.props.history.push("/");
     }
     if (this.state !== nextState) {

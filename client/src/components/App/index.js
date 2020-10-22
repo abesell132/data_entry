@@ -7,7 +7,7 @@ import { connect } from "react-redux";
 class Home extends Component {
   render() {
     return (
-      <div class="Script">
+      <div className="AppPage">
         <VariblesContainer />
         <ActionsContainer />
       </div>

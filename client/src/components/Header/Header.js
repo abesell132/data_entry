@@ -31,8 +31,10 @@ class Header extends Component {
     );
     return (
       <header>
-        <div class="container">
-          <div className="title">Header Title</div>
+        <div className="container">
+          <div className="title">
+            <Link to="/">Header Title</Link>
+          </div>
           <div className="navigation">
             <span>Pricing</span>
             <span>Documentation</span>
