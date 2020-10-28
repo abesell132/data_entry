@@ -37,7 +37,7 @@ class NewScript extends Component {
       <div id="popup" className="variable-display" style={{ display: this.props.appState.popup_visible }} onClick={this.closePopup}>
         <div id="popup-container" onClick={this.stopProp}>
           <div id="popup-content" className="image">
-            <img src={`http://localhost:5000/api/scripts/variable/${this.props.scripts.currentScript}/${this.props.appState.popup_data.type}/${this.props.appState.popup_data.name}`} />
+            <img src={`http://localhost:5000/api/scripts/variable/${this.props.script.currentScript}/${this.props.appState.popup_data.type}/${this.props.appState.popup_data.name}`} />
           </div>
           <div id="popup-close" onClick={this.closePopup}>
             close
@@ -51,7 +51,7 @@ class NewScript extends Component {
 const mapStateToProps = (state) => ({
   appState: state.appState,
   commands: state.commands,
-  scripts: state.scripts,
+  script: state.script,
 });
 
 export default connect(mapStateToProps, { closePopup, addScript })(NewScript);

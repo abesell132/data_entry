@@ -32,8 +32,7 @@ class NewScript extends Component {
     });
   }
   onFileUpload(files) {
-    files.forEach((file, index) => {
-      console.log(file);
+    files.forEach((file) => {
       if (file.type !== "image/png" && file.type !== "image/jpeg") {
         this.setState({
           error: "Upload is not .png or .jpg file!",

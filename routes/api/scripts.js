@@ -4,21 +4,13 @@ const { v4: uuidv4 } = require("uuid");
 const path = require("path");
 var formidable = require("formidable");
 const fs = require("fs");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-const keys = require("../../config/keys");
 const passport = require("passport");
 const commands = require("./commands");
 
 // Load User model
 const Script = require("../../models/Script");
 
-// @route   GET api/users/test
-// @desc    Tests users route
-// @access  Public
-router.get("/test", (req, res) => res.json({ msg: "Users Works" }));
-
-router.post("/add", passport.authenticate("jwt", { session: false }), (req, res) => {
+router.post("/addScript", passport.authenticate("jwt", { session: false }), (req, res) => {
   const newScript = new Script({
     id: uuidv4(),
     name: req.body.name,
@@ -40,35 +32,16 @@ router.post("/add", passport.authenticate("jwt", { session: false }), (req, res)
     })
     .catch((err) => res.send(err));
 });
+
 router.post("/updateScript", passport.authenticate("jwt", { session: false }), (req, res) => {
-  Script.findOneAndUpdate(
-    { owner: req.user.id, id: req.body.id },
-    { commands: req.body.script.commands, variables: req.body.script.variables, name: req.body.script.name },
-    { useFindAndModify: false }
-  )
+  Script.findOneAndUpdate({ owner: req.user.id, id: req.body.id }, req.body.script, { useFindAndModify: false })
     .then((script) => {
       res.send(script);
     })
     .catch((err) => res.send(err));
 });
 
-router.post("/updateCommands", passport.authenticate("jwt", { session: false }), (req, res) => {
-  Script.findOneAndUpdate({ owner: req.user.id, id: req.body.id }, { commands: req.body.commands }, { useFindAndModify: false })
-    .then((script) => {
-      res.send(script);
-    })
-    .catch((err) => res.send(err));
-});
-
-router.post("/updateVariables", passport.authenticate("jwt", { session: false }), (req, res) => {
-  Script.findOneAndUpdate({ owner: req.user.id, id: req.body.id }, { variables: req.body.variables }, { useFindAndModify: false })
-    .then((script) => {
-      res.send(script);
-    })
-    .catch((err) => res.send(err));
-});
-
-router.post("/queryScripts", passport.authenticate("jwt", { session: false }), (req, res) => {
+router.post("/getAccountScripts", passport.authenticate("jwt", { session: false }), (req, res) => {
   Script.find({ owner: req.user.id })
     .then((scripts) => {
       let returnArray = [];
@@ -84,43 +57,42 @@ router.post("/queryScripts", passport.authenticate("jwt", { session: false }), (
     .catch((err) => res.send(err));
 });
 
-router.post("/findOne", passport.authenticate("jwt", { session: false }), (req, res) => {
+router.post("/getScript", passport.authenticate("jwt", { session: false }), (req, res) => {
   Script.findOne({ owner: req.user.id, id: req.body.id })
     .then((script) => res.send(script))
     .catch((err) => res.send(err));
 });
 
-router.post("/delete", passport.authenticate("jwt", { session: false }), (req, res) => {
+router.post("/deleteScript", passport.authenticate("jwt", { session: false }), (req, res) => {
   Script.findOneAndDelete({ owner: req.user.id, id: req.body.id })
     .then((script) => res.send(script))
     .catch((err) => res.send(err));
 });
 
-router.post("/execute", passport.authenticate("jwt", { session: false }), async (req, res) => {
-  console.log(req.body.id);
+router.post("/executeScript", passport.authenticate("jwt", { session: false }), async (req, res) => {
   req.setTimeout(0);
-  Script.findOne({ owner: req.user.id, id: req.body.id }).then((script) => {
-    let scriptCommands = script.commands;
-    commands.executeCommands(scriptCommands, req.body.id).then((response) => res.send(response));
-  });
-  // .catch((err) => res.send(err));
+  Script.findOne({ owner: req.user.id, id: req.body.id })
+    .then((script) => {
+      let scriptCommands = script.commands;
+      commands.executeCommands(scriptCommands, req.body.id).then((response) => res.send(response));
+    })
+    .catch((err) => res.send(err));
 });
 
+// Get Variable File
 router.get("/variable/:scriptID/:type/:file_name", (req, res) => {
-  console.log(req.params);
   Script.findOne({ id: req.params.scriptID })
-    .then((result) => {
-      console.log(result);
+    .then(() => {
       res.sendFile(path.join(__dirname, "../../", "/scripts/" + req.params.scriptID + "/" + req.params.type + "/" + req.params.file_name));
     })
     .catch((err) => {
-      console.log(err);
+      if (err) throw err;
     });
 });
 
+// Upload Variable File
 router.post("/variable/:scriptID/:file_name", passport.authenticate("jwt", { session: false }), (req, res, next) => {
   const write_path = path.join(__dirname, "../../", "/scripts/" + req.params.scriptID + "/uploaded/");
-
   Script.findOne({ owner: req.user.id, id: req.params.scriptID })
     .then(() => {
       const form = formidable({ multiples: false, uploadDir: write_path, keepExtensions: true });
@@ -129,20 +101,38 @@ router.post("/variable/:scriptID/:file_name", passport.authenticate("jwt", { ses
           next(err);
           return;
         }
-        setTimeout(function () {
-          rename_files(files, write_path);
-        }, 300);
+        rename_files(files, write_path);
       });
       res.send("Success");
     })
-    .catch((err) => res.send(err));
+    .catch((err) => {
+      if (err) throw err;
+    });
+});
+
+router.post("/variableDelete/:scriptID/:file_name", passport.authenticate("jwt", { session: false }), (req, res) => {
+  Script.findOne({ owner: req.user.id, id: req.params.scriptID })
+    .then(() => {
+      if (req.body.generated) {
+        fs.unlinkSync(path.join(__dirname, "../../scripts/" + req.params.scriptID + "/generated/" + req.params.file_name), (err) => {
+          if (err) throw err;
+        });
+      } else {
+        fs.unlinkSync(path.join(__dirname, "../../scripts/" + req.params.scriptID + "/uploaded/" + req.params.file_name), (err) => {
+          if (err) throw err;
+        });
+      }
+      res.send("Removed");
+    })
+    .catch((err) => {
+      if (err) throw err;
+    });
 });
 
 module.exports = router;
 
 function rename_files(uploaded_file, write_path) {
-  console.log(write_path);
   fs.rename(uploaded_file.file.path, write_path + uploaded_file.file.name, (err) => {
-    console.log(err);
+    if (err) throw err;
   });
 }

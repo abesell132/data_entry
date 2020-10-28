@@ -57,7 +57,6 @@ class Home extends Component {
 const mapStateToProps = (state) => ({
   appState: state.appState,
   auth: state.auth,
-  scripts: state.scripts,
 });
 
 export default connect(mapStateToProps, {

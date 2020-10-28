@@ -1,10 +1,19 @@
 import React, { Component } from "react";
 import { setPopupType, closePopup } from "../../redux/actions/appStateActions";
-import { executeCommands } from "../../redux/actions/commandActions";
+import { executeCommands, reorderCommands } from "../../redux/actions/commandActions";
 import { saveScript, executeScript } from "../../redux/actions/scriptActions";
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import Plus from "../../assets/imgs/plus.png";
 import "./index.scss";
 import { connect } from "react-redux";
+
+// a little function to help us with reordering the result
+const reorder = (list, startIndex, endIndex) => {
+  const result = Array.from(list);
+  const [removed] = result.splice(startIndex, 1);
+  result.splice(endIndex, 0, removed);
+  return result;
+};
 
 class ActionsContainer extends Component {
   constructor() {
@@ -12,15 +21,36 @@ class ActionsContainer extends Component {
     this.openPopup = this.openPopup.bind(this);
     this.executeCommands = this.executeCommands.bind(this);
     this.saveScript = this.saveScript.bind(this);
+    this.onDragEnd = this.onDragEnd.bind(this);
+  }
+
+  onDragEnd(result) {
+    // dropped outside the list
+    if (!result.destination) {
+      return;
+    }
+    const items = reorder(this.props.script.list, result.source.index, result.destination.index);
+    const itemsJSON = reorder(this.props.script.json, result.source.index, result.destination.index);
+    this.props.reorderCommands(items, itemsJSON);
   }
   openPopup() {
     this.props.setPopupType("COMMAND_SELECT");
   }
   saveScript() {
-    this.props.saveScript(this.props.scripts, this.props.id);
+    let script = {
+      commands: this.props.script.commands,
+      variables: this.props.script.variables,
+      name: this.props.script.name,
+    };
+    this.props.saveScript(script, this.props.id);
   }
   executeCommands() {
-    this.props.saveScript(this.props.scripts, this.props.id);
+    let script = {
+      commands: this.props.script.commands,
+      variables: this.props.script.variables,
+      name: this.props.script.name,
+    };
+    this.props.saveScript(script, this.props.id);
     this.props.executeScript(this.props.id);
   }
   render() {
@@ -35,9 +65,24 @@ class ActionsContainer extends Component {
           </button>
         </div>
         <div className="actions-list">
-          {this.props.scripts.list.map((Element, key) => (
-            <div key={key}>{Element}</div>
-          ))}
+          <DragDropContext onDragEnd={this.onDragEnd}>
+            <Droppable droppableId="droppable">
+              {(provided) => (
+                <div {...provided.droppableProps} ref={provided.innerRef}>
+                  {this.props.script.list.map((item, index) => (
+                    <Draggable key={item.props.id} draggableId={item.props.id} index={index} className="action-draggable">
+                      {(provided) => (
+                        <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+                          {item}
+                        </div>
+                      )}
+                    </Draggable>
+                  ))}
+                  {provided.placeholder}
+                </div>
+              )}
+            </Droppable>
+          </DragDropContext>
         </div>
         <div id="add-action" onClick={this.openPopup}>
           <img src={Plus} style={{ width: "100%" }} alt="Add Command" />
@@ -50,7 +95,7 @@ class ActionsContainer extends Component {
 const mapStateToProps = (state) => ({
   appState: state.appState,
   commands: state.commands,
-  scripts: state.scripts,
+  script: state.script,
 });
 
 export default connect(mapStateToProps, {
@@ -59,4 +104,5 @@ export default connect(mapStateToProps, {
   closePopup,
   executeScript,
   saveScript,
+  reorderCommands,
 })(ActionsContainer);

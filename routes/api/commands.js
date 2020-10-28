@@ -1,4 +1,3 @@
-const express = require("express");
 const puppeteer = require("puppeteer");
 
 const executeCommands = async (commands, id) => {
@@ -60,7 +59,6 @@ const load_url = async (page, command) => {
   await page.goto(command.url, { waitUntil: "networkidle2" });
 };
 const screenshot = async (page, command, write_path) => {
-  console.log(command);
   await page.screenshot({ path: write_path + "generated/" + command.name });
   return command.path;
 };

@@ -23,7 +23,6 @@
 .actions-list {
   padding: 10px 10px 0;
 }
-
 #execute-script {
   background: #3498db;
   color: white;
@@ -34,4 +33,7 @@
 #execute-script:hover {
   cursor: pointer;
   background-color: #2980b9;
+}
+div[data-rbd-draggable-context-id="1"] {
+  margin-bottom: 10px;
 }

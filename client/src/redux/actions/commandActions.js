@@ -19,6 +19,10 @@ export const executeCommands = (commandsJSON) => (dispatch) => {
     console.log(err);
   });
 };
+export const reorderCommands = (newList, newJSON) => (dispatch) => {
+  dispatch({ type: "UPDATE_COMMAND_LIST", payload: newList });
+  dispatch({ type: "UPDATE_COMMAND_JSON", payload: newJSON });
+};
 export const updateCommand = (id, commandsList, commandsJSON, name, value) => (dispatch) => {
   for (let a = 0; a < commandsList.length; a++) {
     if (commandsList[a].props.id === id) {

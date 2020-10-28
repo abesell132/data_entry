@@ -2,18 +2,27 @@ import axios from "axios";
 import { addCommands } from "./commandActions";
 import store from "../store";
 
+export const saveScript = (script, id) => (dispatch) => {
+  let scriptProps = {
+    commands: script.json,
+    variables: script.variables,
+    name: script.name,
+  };
+  axios.post("http://localhost:5000/api/scripts/updateScript", { script: scriptProps, id }).catch((err) => console.log(err));
+};
+
 export const executeScript = (id) => (dispatch) => {
   const state = store.getState();
-  let newState = state.scripts.variables;
+  let newState = state.script.variables;
   axios
-    .post("http://localhost:5000/api/scripts/execute", { id })
+    .post("http://localhost:5000/api/scripts/executeScript", { id })
     .then((res) => {
       for (let a = 0; a < res.data.variables.length; a++) {
-        console.log(res.data.variables[a]);
         newState.push(res.data.variables[a]);
       }
 
       dispatch({ type: "ADD_VARIABLES", payload: newState });
+      dispatch(saveScript({ variables: newState }, state.script.currentScript));
     })
     .catch((err) => console.log(err));
 };
@@ -22,7 +31,7 @@ export const addScript = (name) => (dispatch) => {
   const state = store.getState();
   let newScript = state.auth.accountScripts;
   axios
-    .post("http://localhost:5000/api/scripts/add", {
+    .post("http://localhost:5000/api/scripts/addScript", {
       name,
     })
     .then((res) => {
@@ -33,15 +42,13 @@ export const addScript = (name) => (dispatch) => {
 };
 
 export const queryScripts = () => (dispatch) => {
-  axios.post("http://localhost:5000/api/scripts/queryScripts").then((res) => {
-    console.log(res.data);
+  axios.post("http://localhost:5000/api/scripts/getAccountScripts").then((res) => {
     dispatch({ type: "UPDATE_SCRIPT_LIST", payload: res.data });
   });
 };
 
 export const findOneScript = (id) => (dispatch) => {
-  axios.post("http://localhost:5000/api/scripts/findOne", { id }).then((res) => {
-    console.log(res.data);
+  axios.post("http://localhost:5000/api/scripts/getScript", { id }).then((res) => {
     dispatch(addCommands(res.data.commands));
     dispatch({ type: "ADD_VARIABLES", payload: res.data.variables });
     dispatch({ type: "UPDATE_CURRENT_SCRIPT", payload: id });
@@ -49,24 +56,10 @@ export const findOneScript = (id) => (dispatch) => {
   });
 };
 
-export const saveScript = (script, id) => (dispatch) => {
-  let newScript = {
-    commands: script.json,
-    variables: script.variables,
-    name: script.name,
-  };
-  console.log(newScript);
-  axios
-    .post("http://localhost:5000/api/scripts/updateScript", { script: newScript, id })
-    .then((res) => console.log(res))
-    .catch((err) => console.log(err));
-};
-
 export const deleteScript = (id, history) => (dispatch) => {
   axios
-    .post("http://localhost:5000/api/scripts/delete", { id })
+    .post("http://localhost:5000/api/scripts/deleteScript", { id })
     .then((res) => {
-      console.log(res);
       history.push("/");
       dispatch(queryScripts());
     })
@@ -79,6 +72,18 @@ export const clearCurrentScript = () => (dispatch) => {
   dispatch({ type: "UPDATE_COMMAND_JSON", payload: [] });
 };
 
+export const deleteVariable = (name, generated = 0, index) => (dispatch) => {
+  const state = store.getState();
+  axios
+    .post(`http://localhost:5000/api/scripts/variableDelete/${state.script.currentScript}/${name}`, { generated })
+    .then(() => {
+      let newVariables = state.script.variables;
+      newVariables.splice(index, 1);
+      dispatch({ type: "ADD_VARIABLES", payload: newVariables });
+      dispatch(saveScript({ variables: newVariables }, state.script.currentScript));
+    })
+    .catch((err) => console.log(err));
+};
 export const uploadVariable = (file) => (dispatch) => {
   let config = {
     headers: {
@@ -86,19 +91,25 @@ export const uploadVariable = (file) => (dispatch) => {
     },
   };
   let fd = new FormData();
-  fd.append("name", "image");
   fd.append("file", file);
 
   const state = store.getState();
-  let newVariables = state.scripts.variables;
+  let newVariables = state.script.variables;
 
   axios
-    .post("http://localhost:5000/api/scripts/variable/" + state.scripts.currentScript + "/" + file.name, fd, config)
+    .post("http://localhost:5000/api/scripts/variable/" + state.script.currentScript + "/" + file.name, fd, config)
     .then((response) => {
       newVariables.push({ type: "uploaded", name: file.name });
-      console.log(newVariables);
       dispatch({ type: "ADD_VARIABLES", payload: newVariables });
     })
     .catch((err) => console.log(err));
 };
-export const getVariableFile = (file_name, scriptID) => {};
+
+Array.prototype.removeAll = function (key) {
+  var index = this.indexOf(key);
+
+  if (index === -1) return;
+
+  this.splice(index, 1);
+  this.removeAll(key);
+};

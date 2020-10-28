@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import isEmpty from "../../validation/is-empty";
 import { setPopupType, setPopupData } from "../../redux/actions/appStateActions";
-import { uploadVariable } from "../../redux/actions/scriptActions";
+import { deleteVariable } from "../../redux/actions/scriptActions";
 import photoImage from "../../assets/imgs/picture.png";
+import GarbageCan from "../../assets/imgs/garbage-can.png";
 import "./index.scss";
 
 class VariablesContainer extends Component {
@@ -19,6 +19,10 @@ class VariablesContainer extends Component {
   addVariable() {
     this.props.setPopupType("VARIABLE_UPLOAD");
   }
+  deleteVariable(e, name, generated, index) {
+    e.stopPropagation();
+    this.props.deleteVariable(name, generated, index);
+  }
   render() {
     return (
       <div className="variables">
@@ -26,15 +30,20 @@ class VariablesContainer extends Component {
           <button onClick={this.addVariable}>Add Variable</button>
         </div>
         <div id="variables-content">
-          {this.props.scripts.variables.map((element, index) => {
+          {this.props.script.variables.map((element, index) => {
             return (
               <div key={index} className="variable" onClick={() => this.openVariable({ type: element.type, name: element.name })}>
-                <div className="file-type">
-                  <img src={photoImage} alt="Decoration" />
+                <div className="variable-meta">
+                  <div className="file-type">
+                    <img src={photoImage} alt="Decoration" />
+                  </div>
+                  <div className="file-name">
+                    <h4>Image {element.type == "generated" ? <small>- generated</small> : ""}</h4>
+                    <span>{element.name}</span>
+                  </div>
                 </div>
-                <div className="file-name">
-                  <h4>Image {element.type == "generated" ? <small>- generated</small> : ""}</h4>
-                  <span>{element.name}</span>
+                <div className="delete-variable">
+                  <img src={GarbageCan} onClick={(e) => this.deleteVariable(e, element.name, element.type == "generated" ? 1 : 0, index)} />
                 </div>
               </div>
             );
@@ -46,10 +55,11 @@ class VariablesContainer extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  scripts: state.scripts,
+  script: state.script,
 });
 
 export default connect(mapStateToProps, {
   setPopupType,
+  deleteVariable,
   setPopupData,
 })(VariablesContainer);
