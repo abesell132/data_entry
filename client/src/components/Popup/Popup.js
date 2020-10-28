@@ -3,6 +3,8 @@ import { connect } from "react-redux";
 import "./Popup.scss";
 import CommandSelect from "./popups/CommandSelect";
 import NewScript from "./popups/NewScript";
+import VaribleDisplay from "./popups/VariableDisplay";
+import VariableUpload from "./popups/VariableUpload";
 
 class Popup extends Component {
   render() {
@@ -13,6 +15,10 @@ class Popup extends Component {
         return <CommandSelect />;
       case "NEW_SCRIPT":
         return <NewScript />;
+      case "VARIABLE":
+        return <VaribleDisplay />;
+      case "VARIABLE_UPLOAD":
+        return <VariableUpload />;
       default:
         return <div style={{ display: "none" }} />;
     }

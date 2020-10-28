@@ -4,7 +4,7 @@ import isEmpty from "../../validation/is-empty";
 import { withRouter } from "react-router-dom";
 import "./Home.scss";
 import { setPopupType } from "../../redux/actions/appStateActions";
-import { queryScripts, findOneScript } from "../../redux/actions/scriptActions";
+import { queryScripts, findOneScript, deleteScript } from "../../redux/actions/scriptActions";
 import garbageCan from "../../assets/imgs/garbage-can.png";
 
 class Home extends Component {
@@ -19,16 +19,19 @@ class Home extends Component {
     this.props.setPopupType("NEW_SCRIPT");
   }
   editScript(id) {
-    this.props.findOneScript(id, this.props.history);
+    this.props.history.push("/app/" + id);
+  }
+  deleteScript(id) {
+    this.props.deleteScript(id, this.props.history);
   }
   render() {
-    let scriptList = !isEmpty(this.props.scripts.accountScripts) ? (
+    let scriptList = !isEmpty(this.props.auth.accountScripts) ? (
       <div id="script-list">
-        {this.props.scripts.accountScripts.map((script, index) => (
+        {this.props.auth.accountScripts.map((script, index) => (
           <div className="script pointer" key={index} onDoubleClick={() => this.editScript(script.id)}>
             <div>{script.name}</div>
             <div className="delete-button">
-              <img src={garbageCan} alt="Delete Script" />
+              <img src={garbageCan} alt="Delete Script" onClick={() => this.deleteScript(script.id)} />
             </div>
           </div>
         ))}
@@ -53,6 +56,7 @@ class Home extends Component {
 }
 const mapStateToProps = (state) => ({
   appState: state.appState,
+  auth: state.auth,
   scripts: state.scripts,
 });
 
@@ -60,4 +64,5 @@ export default connect(mapStateToProps, {
   setPopupType,
   queryScripts,
   findOneScript,
+  deleteScript,
 })(withRouter(Home));

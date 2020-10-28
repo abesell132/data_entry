@@ -1,5 +1,6 @@
 const initialState = {
   popup_type: "NONE",
+  popup_data: {},
 };
 
 export default function (state = initialState, action) {
@@ -13,6 +14,11 @@ export default function (state = initialState, action) {
       return {
         ...state,
         popup_type: action.payload,
+      };
+    case "SET_POPUP_DATA":
+      return {
+        ...state,
+        popup_data: action.payload,
       };
     default:
       return state;

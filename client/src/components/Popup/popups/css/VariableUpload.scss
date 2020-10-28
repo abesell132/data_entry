@@ -1,0 +1,25 @@
+.variable-upload {
+  #popup-content {
+    padding: 20px;
+    section > div {
+      min-width: 20vw;
+      border: 1px solid #ddd;
+      padding: 20px;
+      text-align: center;
+
+      h3 {
+        margin: 0 0 0;
+        font-size: 28px;
+      }
+      h4 {
+        margin: 0 0 10px;
+        font-weight: 400;
+        font-size: 24px;
+      }
+      button {
+        min-width: 45%;
+        font-size: 18px;
+      }
+    }
+  }
+}

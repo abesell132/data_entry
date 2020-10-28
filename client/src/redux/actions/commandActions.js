@@ -15,14 +15,9 @@ export const deleteCommand = (id, commandsList, commandsJSON) => (dispatch) => {
 };
 
 export const executeCommands = (commandsJSON) => (dispatch) => {
-  axios
-    .post("http://localhost:5000/api/commands/do", { data: commandsJSON })
-    .then((data) => {
-      console.log(data);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+  axios.post("http://localhost:5000/api/commands/do", { data: commandsJSON }).catch((err) => {
+    console.log(err);
+  });
 };
 export const updateCommand = (id, commandsList, commandsJSON, name, value) => (dispatch) => {
   for (let a = 0; a < commandsList.length; a++) {
@@ -40,87 +35,162 @@ export const updateCommand = (id, commandsList, commandsJSON, name, value) => (d
 };
 
 export const addCommands = (commands, ret = false) => (dispatch) => {
-  console.log(commands);
   for (let a = 0; a < commands.length; a++) {
     let uniqueID = uuidv4();
-    console.log(commands[a]);
     switch (commands[a].type) {
       case "LOAD_URL":
-        if (ret) {
-          return <DefaultBlock name="Load URL" fields={[{ label: "Address", inputType: "text", slug: "url", value: commands[a].url }]} id={uniqueID} />;
-        }
-        dispatch({ type: "ADD_COMMAND_JSON", payload: { type: commands[a].type, url: commands[a].url, id: uniqueID } });
-        dispatch({ type: "ADD_COMMAND_LIST", payload: <DefaultBlock name="Load URL" fields={[{ label: "Address", inputType: "text", slug: "url", value: commands[a].url }]} id={uniqueID} /> });
+        load_url(commands[a], uniqueID, dispatch);
         break;
       case "CLICK":
-        if (ret) {
-          return <DefaultBlock name="Click" fields={[{ label: "Selector", inputType: "text", slug: "selector", value: commands[a].selector }]} id={uniqueID} />;
-        }
-        dispatch({ type: "ADD_COMMAND_JSON", payload: { type: "CLICK", selector: commands[a].selector, id: uniqueID } });
-        dispatch({ type: "ADD_COMMAND_LIST", payload: <DefaultBlock name="Click" fields={[{ label: "Selector", inputType: "text", slug: "selector", value: commands[a].selector }]} id={uniqueID} /> });
+        click(commands[a], uniqueID, dispatch);
         break;
       case "SCREENSHOT":
-        if (ret) {
-          return <DefaultBlock name="Screenshot" fields={[{ label: "File Name", inputType: "text", slug: "file_name", value: commands[a].file_name }]} id={uniqueID} />;
-        }
-        dispatch({ type: "ADD_COMMAND_JSON", payload: { type: "SCREENSHOT", file_name: commands[a].file_name, id: uniqueID } });
-        dispatch({
-          type: "ADD_COMMAND_LIST",
-          payload: <DefaultBlock name="Screenshot" fields={[{ label: "File Name", inputType: "text", slug: "file_name", value: commands[a].file_name }]} id={uniqueID} />,
-        });
+        screenshot(commands[a], uniqueID, dispatch);
         break;
       case "SET_TIMEOUT":
-        if (ret) {
-          return <DefaultBlock name="Set Timeout" fields={[{ label: "Duration (ms)", inputType: "text", slug: "duration", value: commands[a].duration }]} id={uniqueID} />;
-        }
-        dispatch({ type: "ADD_COMMAND_JSON", payload: { type: "SET_TIMEOUT", duration: commands[a].duration, id: uniqueID } });
-        dispatch({
-          type: "ADD_COMMAND_LIST",
-          payload: <DefaultBlock name="Set Timeout" fields={[{ label: "Duration (ms)", inputType: "text", slug: "duration", value: commands[a].duration }]} id={uniqueID} />,
-        });
+        set_timeout(commands[a], uniqueID, dispatch);
         break;
       case "SUBMIT_FORM":
-        if (ret) {
-          return <DefaultBlock name="Submit Form" fields={[{ label: "Selector", inputType: "text", slug: "selector", value: commands[a].selector }]} id={uniqueID} />;
-        }
-        dispatch({ type: "ADD_COMMAND_JSON", payload: { type: "SUBMIT_FORM", selector: commands[a].selector, id: uniqueID } });
-        dispatch({
-          type: "ADD_COMMAND_LIST",
-          payload: <DefaultBlock name="Submit Form" fields={[{ label: "Selector", inputType: "text", slug: "selector", value: commands[a].selector }]} id={uniqueID} />,
-        });
+        submit_form(commands[a], uniqueID, dispatch);
         break;
       case "TYPE":
-        if (ret) {
-          return (
-            <DefaultBlock
-              name="Type"
-              fields={[
-                { label: "Selector", inputType: "text", slug: "selector", value: commands[a].selector },
-                { label: "Text", inputType: "text", slug: "text", value: commands[a].text },
-              ]}
-              key={uniqueID}
-              id={uniqueID}
-            />
-          );
-        }
-        dispatch({ type: "ADD_COMMAND_JSON", payload: { type: "TYPE", selector: commands[a].selector, text: commands[a].text, id: uniqueID } });
-        dispatch({
-          type: "ADD_COMMAND_LIST",
-          payload: (
-            <DefaultBlock
-              name="Type"
-              fields={[
-                { label: "Selector", inputType: "text", slug: "selector", value: commands[a].selector },
-                { label: "Text", inputType: "text", slug: "text", value: commands[a].text },
-              ]}
-              key={uniqueID}
-              id={uniqueID}
-            />
-          ),
-        });
+        type(commands[a], uniqueID, dispatch);
         break;
       default:
         break;
     }
+  }
+};
+const type = (command, uuid, dispatch) => {
+  let element = (
+    <DefaultBlock
+      name="Type"
+      fields={[
+        { label: "Selector", inputType: "text", slug: "selector", value: command.selector },
+        { label: "Text", inputType: "text", slug: "text", value: command.text },
+      ]}
+      id={uuid}
+    />
+  );
+  if (dispatch) {
+    dispatch({ type: "ADD_COMMAND_JSON", payload: { type: "TYPE", selector: command.selector, text: command.text, id: uuid } });
+    dispatch({ type: "ADD_COMMAND_LIST", payload: element });
+  } else {
+    return element;
+  }
+};
+
+const load_url = (command, uuid, dispatch = false) => {
+  let element = (
+    <DefaultBlock
+      name="Load URL"
+      fields={[
+        {
+          label: "Address",
+          inputType: "text",
+          slug: "url",
+          value: command.url,
+        },
+      ]}
+      id={uuid}
+    />
+  );
+  if (dispatch) {
+    dispatch({ type: "ADD_COMMAND_JSON", payload: { type: command.type, url: command.url, id: uuid } });
+    dispatch({ type: "ADD_COMMAND_LIST", payload: element });
+  } else {
+    return element;
+  }
+};
+
+const click = (command, uuid, dispatch) => {
+  let element = (
+    <DefaultBlock
+      name="Click"
+      fields={[
+        {
+          label: "Selector",
+          inputType: "text",
+          slug: "selector",
+          value: command.selector,
+        },
+      ]}
+      id={uuid}
+    />
+  );
+  if (dispatch) {
+    dispatch({ type: "ADD_COMMAND_JSON", payload: { type: "CLICK", selector: command.selector, id: uuid } });
+    dispatch({ type: "ADD_COMMAND_LIST", payload: element });
+  } else {
+    return element;
+  }
+};
+
+const screenshot = (command, uuid, dispatch) => {
+  let element = (
+    <DefaultBlock
+      name="Screenshot"
+      fields={[
+        {
+          label: "File Name",
+          inputType: "text",
+          slug: "name",
+          value: command.name,
+        },
+      ]}
+      id={uuid}
+    />
+  );
+  if (dispatch) {
+    dispatch({ type: "ADD_COMMAND_JSON", payload: { type: "SCREENSHOT", name: command.name, id: uuid } });
+    dispatch({ type: "ADD_COMMAND_LIST", payload: element });
+  } else {
+    return element;
+  }
+};
+
+const set_timeout = (command, uuid, dispatch) => {
+  let element = (
+    <DefaultBlock
+      name="Set Timeout"
+      fields={[
+        {
+          label: "Duration (ms)",
+          inputType: "text",
+          slug: "duration",
+          value: command.duration,
+        },
+      ]}
+      id={uuid}
+    />
+  );
+  if (dispatch) {
+    dispatch({ type: "ADD_COMMAND_JSON", payload: { type: "SET_TIMEOUT", duration: command.duration, id: uuid } });
+    dispatch({ type: "ADD_COMMAND_LIST", payload: element });
+  } else {
+    return element;
+  }
+};
+
+const submit_form = (command, uuid, dispatch) => {
+  let element = (
+    <DefaultBlock
+      name="Submit Form"
+      fields={[
+        {
+          label: "Selector",
+          inputType: "text",
+          slug: "selector",
+          value: command.selector,
+        },
+      ]}
+      id={uuid}
+    />
+  );
+  if (dispatch) {
+    dispatch({ type: "ADD_COMMAND_JSON", payload: { type: "SUBMIT_FORM", selector: command.selector, id: uuid } });
+    dispatch({ type: "ADD_COMMAND_LIST", payload: element });
+  } else {
+    return element;
   }
 };

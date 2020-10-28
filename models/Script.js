@@ -16,6 +16,7 @@ const ScriptSchema = new Schema({
     required: true,
   },
   commands: [],
+  variables: [],
 });
 
 module.exports = Script = mongoose.model("scripts", ScriptSchema);

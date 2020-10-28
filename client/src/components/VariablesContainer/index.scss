@@ -1,7 +1,50 @@
 .variables {
-  padding: 20px;
+  #variables-header {
+    padding: 10px 15px;
+    button {
+      width: 100%;
+    }
+  }
+  #variables-content {
+    padding: 10px 15px;
+    .variable {
+      box-shadow: 0 3px 8px -1px rgba(0, 0, 0, 0.05);
+      display: flex;
+      margin: 5px 0;
+      background: white;
+      padding: 10px;
+      align-items: center;
+      border-bottom: 2px solid white;
+      border-top: 2px solid white;
+      .file-type {
+        max-height: 50px;
+        img {
+          max-height: 50px;
+          width: 50px;
+        }
+      }
 
-  > button {
-    width: 100%;
+      .file-name {
+        padding: 0 10px;
+        h4 {
+          margin: 0;
+          font-size: 18px;
+          small {
+            font-weight: 400;
+            font-size: 14px;
+            font-style: italic;
+          }
+        }
+        span {
+          font-size: 15px;
+        }
+      }
+    }
+    .variable:hover {
+      background: #fcfcfc;
+      cursor: pointer;
+      box-shadow: 0 3px 8px -1px rgba(0, 0, 0, 0.15);
+      border-bottom: 2px dashed rgb(50, 152, 219);
+    }
   }
 }

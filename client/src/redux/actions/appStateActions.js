@@ -9,3 +9,7 @@ export const setPopupType = (type) => (dispatch) => {
 export const closePopup = () => (dispatch) => {
   dispatch({ type: "CLOSE_POPUP" });
 };
+
+export const setPopupData = (data) => (dispatch) => {
+  dispatch({ type: "SET_POPUP_DATA", payload: data });
+};

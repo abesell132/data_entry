@@ -27,11 +27,11 @@ class DefaultBlock extends Component {
   }
   onChange(e) {
     this.setState({ [e.target.name]: e.target.value });
-    this.props.updateCommand(this.props.id, this.props.commands.list, this.props.commands.json, e.target.name, e.target.value);
+    this.props.updateCommand(this.props.id, this.props.scripts.list, this.props.scripts.json, e.target.name, e.target.value);
   }
   deleteBlock(e) {
     e.stopPropagation();
-    this.props.deleteCommand(this.props.id, this.props.commands.list, this.props.commands.json);
+    this.props.deleteCommand(this.props.id, this.props.scripts.list, this.props.scripts.json);
   }
   render() {
     let display = this.state.showSettings ? "block" : "none";
@@ -59,6 +59,7 @@ class DefaultBlock extends Component {
 const mapStateToProps = (state) => ({
   appState: state.appState,
   commands: state.commands,
+  scripts: state.scripts,
 });
 
 const mapDispatchToProps = (dispatch) => ({

@@ -3,11 +3,15 @@ import QuestionMark from "../../../assets/imgs/question-mark.png";
 import { connect } from "react-redux";
 import { closePopup } from "../../../redux/actions/appStateActions";
 import { addCommands } from "../../../redux/actions/commandActions";
+import Standard from "./CommandSelect/Standard";
 import "./css/CommandSelect.scss";
 
 class CommandSelect extends Component {
   constructor() {
     super();
+    this.state = {
+      folder: "",
+    };
     this.closePopup = this.closePopup.bind(this);
     this.stopProp = this.stopProp.bind(this);
     this.onClick = this.onClick.bind(this);
@@ -18,52 +22,51 @@ class CommandSelect extends Component {
   stopProp(e) {
     e.stopPropagation();
   }
+  changeFolder(data) {
+    this.setState({
+      folders: data,
+    });
+  }
   onClick(command) {
     this.props.addCommands([command]);
     this.props.closePopup();
   }
   render() {
-    return (
-      <div id="popup" className="command-select" onClick={this.closePopup}>
-        <div id="popup-container" onClick={this.stopProp}>
+    let content;
+
+    switch (this.state.folders) {
+      case "standard":
+        content = <Standard />;
+        break;
+      default:
+        content = (
           <div id="popup-content">
-            <div onClick={() => this.onClick({ type: "CLICK", selector: "" })}>
-              <div>Click</div>
-              <div className="action-question-mark">
-                <img src={QuestionMark} alt="More Information" />
-              </div>
-            </div>
-            <div onClick={() => this.onClick({ type: "LOAD_URL", url: "" })}>
-              <div>Load Url</div>
-              <div className="action-question-mark">
-                <img src={QuestionMark} alt="More Information" />
-              </div>
-            </div>
-            <div onClick={() => this.onClick({ type: "SCREENSHOT", file_name: "" })}>
-              <div>Screenshot</div>
-              <div className="action-question-mark">
-                <img src={QuestionMark} alt="More Information" />
-              </div>
-            </div>
-            <div onClick={() => this.onClick({ type: "SET_TIMEOUT", duration: "" })}>
-              <div>Set Timeout</div>
+            <div onClick={() => this.changeFolder("standard")}>
+              <div>Standard</div>
               <div className="action-question-mark">
                 <img src={QuestionMark} alt="More Information" />
               </div>
             </div>
             <div onClick={() => this.onClick({ type: "SUBMIT_FORM", selector: "" })}>
-              <div>Submit Form</div>
+              <div>Advanced</div>
               <div className="action-question-mark">
                 <img src={QuestionMark} alt="More Information" />
               </div>
             </div>
             <div onClick={() => this.onClick({ type: "TYPE", selector: "", text: "" })}>
-              <div>Type</div>
+              <div>DOM Tools</div>
               <div className="action-question-mark">
                 <img src={QuestionMark} alt="More Information" />
               </div>
             </div>
           </div>
+        );
+    }
+
+    return (
+      <div id="popup" className="command-select" onClick={this.closePopup}>
+        <div id="popup-container" onClick={this.stopProp}>
+          {content}
           <div id="popup-close" onClick={this.closePopup}>
             close
           </div>

@@ -1,24 +1,13 @@
 const express = require("express");
 const puppeteer = require("puppeteer");
-const router = express.Router();
-const fs = require("fs");
-const { v4: uuidv4 } = require("uuid");
 
-router.get("/test", (req, res) => res.sendFile("C://work/data_entry/abesell2.png"));
-
-router.post("/do", async (req, res) => {
-  let commands = req.body.data;
-  const sessionID = uuidv4();
-  const write_path = "sessions/" + sessionID + "/";
-  if (!fs.existsSync(write_path)) {
-    fs.mkdirSync(write_path);
-  }
+const executeCommands = async (commands, id) => {
+  const write_path = "scripts/" + id + "/";
   let response = {
-    session: sessionID,
+    id: id,
     variables: [],
     errors: [],
   };
-  req.setTimeout(0);
 
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
@@ -34,8 +23,8 @@ router.post("/do", async (req, res) => {
         await commands.shift();
         continue;
       case "SCREENSHOT":
-        let url = await screenshot(page, commands[0], write_path);
-        await response.variables.push(url);
+        await screenshot(page, commands[0], write_path);
+        await response.variables.push({ type: "image", name: commands[0].name, type: "generated" });
         await commands.shift();
         continue;
       case "SET_TIMEOUT":
@@ -53,10 +42,10 @@ router.post("/do", async (req, res) => {
     }
   }
   await browser.close();
-  await res.json(response);
-});
+  return response;
+};
 
-module.exports = router;
+exports.executeCommands = executeCommands;
 
 const init_page = async (page) => {
   page.setViewport({
@@ -69,10 +58,10 @@ const init_page = async (page) => {
 
 const load_url = async (page, command) => {
   await page.goto(command.url, { waitUntil: "networkidle2" });
-  //   await page.waitForNavigation();
 };
 const screenshot = async (page, command, write_path) => {
-  await page.screenshot({ path: write_path + command.file_name });
+  console.log(command);
+  await page.screenshot({ path: write_path + "generated/" + command.name });
   return command.path;
 };
 
