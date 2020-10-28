@@ -2,13 +2,20 @@ import axios from "axios";
 import { addCommands } from "./commandActions";
 import store from "../store";
 
-export const saveScript = (script, id) => (dispatch) => {
-  let scriptProps = {
-    commands: script.json,
-    variables: script.variables,
-    name: script.name,
-  };
-  axios.post("http://localhost:5000/api/scripts/updateScript", { script: scriptProps, id }).catch((err) => console.log(err));
+export const saveScript = (script = {}, id) => (dispatch) => {
+  axios
+    .post("http://localhost:5000/api/scripts/updateScript", { script, id })
+    .then((res) => {
+      if (script.name) {
+        // dispatch(queryScripts());
+      }
+    })
+    .catch((err) => console.log(err));
+};
+
+export const renameScript = (name, id) => (dispatch) => {
+  dispatch({ type: "UPDATE_SCRIPT_NAME", payload: name });
+  dispatch(saveScript({ name }, id));
 };
 
 export const executeScript = (id) => (dispatch) => {
@@ -20,9 +27,8 @@ export const executeScript = (id) => (dispatch) => {
       for (let a = 0; a < res.data.variables.length; a++) {
         newState.push(res.data.variables[a]);
       }
-
       dispatch({ type: "ADD_VARIABLES", payload: newState });
-      dispatch(saveScript({ variables: newState }, state.script.currentScript));
+      dispatch(saveScript({ variables: newState }, id));
     })
     .catch((err) => console.log(err));
 };

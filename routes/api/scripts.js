@@ -38,7 +38,9 @@ router.post("/updateScript", passport.authenticate("jwt", { session: false }), (
     .then((script) => {
       res.send(script);
     })
-    .catch((err) => res.send(err));
+    .catch((err) => {
+      console.log(err);
+    });
 });
 
 router.post("/getAccountScripts", passport.authenticate("jwt", { session: false }), (req, res) => {

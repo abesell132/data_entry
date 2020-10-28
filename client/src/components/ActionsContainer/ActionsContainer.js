@@ -1,9 +1,10 @@
 import React, { Component } from "react";
 import { setPopupType, closePopup } from "../../redux/actions/appStateActions";
 import { executeCommands, reorderCommands } from "../../redux/actions/commandActions";
-import { saveScript, executeScript } from "../../redux/actions/scriptActions";
+import { saveScript, executeScript, renameScript } from "../../redux/actions/scriptActions";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import Plus from "../../assets/imgs/plus.png";
+import edit from "../../assets/imgs/edit.png";
 import "./index.scss";
 import { connect } from "react-redux";
 
@@ -18,10 +19,17 @@ const reorder = (list, startIndex, endIndex) => {
 class ActionsContainer extends Component {
   constructor() {
     super();
+    this.state = {
+      scriptName: "",
+      editScriptName: false,
+    };
     this.openPopup = this.openPopup.bind(this);
     this.executeCommands = this.executeCommands.bind(this);
     this.saveScript = this.saveScript.bind(this);
     this.onDragEnd = this.onDragEnd.bind(this);
+    this.toggleEditScriptName = this.toggleEditScriptName.bind(this);
+    this.onChange = this.onChange.bind(this);
+    this.renameScript = this.renameScript.bind(this);
   }
 
   onDragEnd(result) {
@@ -37,32 +45,73 @@ class ActionsContainer extends Component {
     this.props.setPopupType("COMMAND_SELECT");
   }
   saveScript() {
-    let script = {
-      commands: this.props.script.commands,
-      variables: this.props.script.variables,
-      name: this.props.script.name,
-    };
-    this.props.saveScript(script, this.props.id);
+    this.props.saveScript(
+      {
+        commands: this.props.script.json,
+        variables: this.props.script.variables,
+        name: this.props.script.name,
+      },
+      this.props.script.currentScript
+    );
   }
   executeCommands() {
-    let script = {
-      commands: this.props.script.commands,
-      variables: this.props.script.variables,
-      name: this.props.script.name,
-    };
-    this.props.saveScript(script, this.props.id);
+    this.props.saveScript(
+      {
+        commands: this.props.script.json,
+        variables: this.props.script.variables,
+        name: this.props.script.name,
+      },
+      this.props.script.currentScript
+    );
     this.props.executeScript(this.props.id);
   }
+  toggleEditScriptName() {
+    this.setState({
+      editScriptName: !this.state.editScriptName,
+    });
+  }
+  onChange(e) {
+    this.setState({
+      [e.target.name]: e.target.value,
+    });
+  }
+  renameScript() {
+    if (this.state.scriptName !== "") {
+      this.props.renameScript(this.state.scriptName, this.props.script.currentScript);
+    } else {
+      this.props.renameScript(this.props.script.name, this.props.script.currentScript);
+    }
+    this.toggleEditScriptName();
+  }
   render() {
+    let scriptName;
+    if (!this.state.editScriptName) {
+      scriptName = (
+        <h3>
+          {this.props.script.name} <img src={edit} width="14" className="pointer edit-script-name" onClick={this.toggleEditScriptName} />
+        </h3>
+      );
+    } else {
+      scriptName = (
+        <div class="change-name-form">
+          {<input type="text" name="scriptName" value={this.state.scriptName == "" ? this.props.script.name : this.state.scriptName} onChange={this.onChange} />}
+          <input type="submit" className="button pointer" value="Done" onClick={this.renameScript} />
+        </div>
+      );
+    }
+
     return (
       <div className="actions">
         <div id="action-controls">
-          <button id="execute-script" onClick={this.executeCommands}>
-            Execute
-          </button>
-          <button id="save-script" className="green" onClick={this.saveScript}>
-            Save
-          </button>
+          <div>{scriptName}</div>
+          <div>
+            <button id="execute-script" onClick={this.executeCommands}>
+              Execute
+            </button>
+            <button id="save-script" className="green" onClick={this.saveScript}>
+              Save
+            </button>
+          </div>
         </div>
         <div className="actions-list">
           <DragDropContext onDragEnd={this.onDragEnd}>
@@ -105,4 +154,5 @@ export default connect(mapStateToProps, {
   executeScript,
   saveScript,
   reorderCommands,
+  renameScript,
 })(ActionsContainer);

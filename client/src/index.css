@@ -22,7 +22,8 @@ a {
 .pointer {
   cursor: pointer;
 }
-button {
+button,
+.button {
   background: #3498db;
   color: white;
   border: none;
