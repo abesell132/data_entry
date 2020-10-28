@@ -38,12 +38,12 @@ class VariablesContainer extends Component {
                     <img src={photoImage} alt="Decoration" />
                   </div>
                   <div className="file-name">
-                    <h4>Image {element.type == "generated" ? <small>- generated</small> : ""}</h4>
+                    <h4>Image {element.type === "generated" ? <small>- generated</small> : ""}</h4>
                     <span>{element.name}</span>
                   </div>
                 </div>
                 <div className="delete-variable">
-                  <img src={GarbageCan} onClick={(e) => this.deleteVariable(e, element.name, element.type == "generated" ? 1 : 0, index)} />
+                  <img src={GarbageCan} onClick={(e) => this.deleteVariable(e, element.name, element.type === "generated" ? 1 : 0, index)} alt="Delete Variable" />
                 </div>
               </div>
             );

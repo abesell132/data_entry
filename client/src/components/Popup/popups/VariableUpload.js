@@ -74,7 +74,7 @@ class NewScript extends Component {
             <section>
               <div {...getRootProps()}>
                 <input {...getInputProps()} />
-                <img src={UploadFileIcon} />
+                <img src={UploadFileIcon} alt="File Upload Graphic" />
                 <h3>Drag and Drop file</h3>
                 <h4>or</h4>
                 <button>Browse</button>

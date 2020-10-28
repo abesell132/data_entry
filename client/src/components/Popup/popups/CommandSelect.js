@@ -67,9 +67,6 @@ class CommandSelect extends Component {
       <div id="popup" className="command-select" onClick={this.closePopup}>
         <div id="popup-container" onClick={this.stopProp}>
           {content}
-          <div id="popup-close" onClick={this.closePopup}>
-            close
-          </div>
         </div>
       </div>
     );

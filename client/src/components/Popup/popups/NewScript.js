@@ -46,9 +46,6 @@ class NewScript extends Component {
               </form>
             </div>
           </div>
-          <div id="popup-close" onClick={this.closePopup}>
-            close
-          </div>
         </div>
       </div>
     );

@@ -88,13 +88,13 @@ class ActionsContainer extends Component {
     if (!this.state.editScriptName) {
       scriptName = (
         <h3>
-          {this.props.script.name} <img src={edit} width="14" className="pointer edit-script-name" onClick={this.toggleEditScriptName} />
+          {this.props.script.name} <img src={edit} width="14" className="pointer edit-script-name" onClick={this.toggleEditScriptName} alt="Edit Script Pen" />
         </h3>
       );
     } else {
       scriptName = (
         <div class="change-name-form">
-          {<input type="text" name="scriptName" value={this.state.scriptName == "" ? this.props.script.name : this.state.scriptName} onChange={this.onChange} />}
+          {<input type="text" name="scriptName" value={this.state.scriptName === "" ? this.props.script.name : this.state.scriptName} onChange={this.onChange} />}
           <input type="submit" className="button pointer" value="Done" onClick={this.renameScript} />
         </div>
       );

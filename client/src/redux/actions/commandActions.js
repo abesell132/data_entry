@@ -16,7 +16,7 @@ export const deleteCommand = (id, commandsList, commandsJSON) => (dispatch) => {
 
 export const executeCommands = (commandsJSON) => (dispatch) => {
   axios.post("http://localhost:5000/api/commands/do", { data: commandsJSON }).catch((err) => {
-    console.log(err);
+    if (err) throw err;
   });
 };
 export const reorderCommands = (newList, newJSON) => (dispatch) => {

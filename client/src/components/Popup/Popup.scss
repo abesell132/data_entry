@@ -11,14 +11,7 @@
   #popup-container {
     position: relative;
     background: white;
-  }
-
-  #popup-close {
-    position: absolute;
-    top: 0;
-    background: #eee;
-    right: 0;
-    padding: 3px 10px;
-    cursor: pointer;
+    border-radius: 4px;
+    overflow: hidden;
   }
 }

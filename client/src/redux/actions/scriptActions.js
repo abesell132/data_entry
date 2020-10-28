@@ -10,7 +10,9 @@ export const saveScript = (script = {}, id) => (dispatch) => {
         // dispatch(queryScripts());
       }
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      if (err) throw err;
+    });
 };
 
 export const renameScript = (name, id) => (dispatch) => {
@@ -30,7 +32,9 @@ export const executeScript = (id) => (dispatch) => {
       dispatch({ type: "ADD_VARIABLES", payload: newState });
       dispatch(saveScript({ variables: newState }, id));
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      if (err) throw err;
+    });
 };
 
 export const addScript = (name) => (dispatch) => {
@@ -44,7 +48,9 @@ export const addScript = (name) => (dispatch) => {
       newScript.push(res.data);
       dispatch({ type: "UPDATE_SCRIPT_LIST", payload: newScript });
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      if (err) throw err;
+    });
 };
 
 export const queryScripts = () => (dispatch) => {
@@ -69,7 +75,9 @@ export const deleteScript = (id, history) => (dispatch) => {
       history.push("/");
       dispatch(queryScripts());
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      if (err) throw err;
+    });
 };
 
 export const clearCurrentScript = () => (dispatch) => {
@@ -88,7 +96,9 @@ export const deleteVariable = (name, generated = 0, index) => (dispatch) => {
       dispatch({ type: "ADD_VARIABLES", payload: newVariables });
       dispatch(saveScript({ variables: newVariables }, state.script.currentScript));
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      if (err) throw err;
+    });
 };
 export const uploadVariable = (file) => (dispatch) => {
   let config = {
@@ -108,14 +118,7 @@ export const uploadVariable = (file) => (dispatch) => {
       newVariables.push({ type: "uploaded", name: file.name });
       dispatch({ type: "ADD_VARIABLES", payload: newVariables });
     })
-    .catch((err) => console.log(err));
-};
-
-Array.prototype.removeAll = function (key) {
-  var index = this.indexOf(key);
-
-  if (index === -1) return;
-
-  this.splice(index, 1);
-  this.removeAll(key);
+    .catch((err) => {
+      if (err) throw err;
+    });
 };
