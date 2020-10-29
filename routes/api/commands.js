@@ -57,6 +57,7 @@ const init_page = async (page) => {
 
 const load_url = async (page, command) => {
   await page.goto(command.url, { waitUntil: "networkidle2" });
+  await page.waitFor(3000);
 };
 const screenshot = async (page, command, write_path) => {
   await page.screenshot({ path: write_path + "generated/" + command.name });
@@ -64,7 +65,7 @@ const screenshot = async (page, command, write_path) => {
 };
 
 const type = async (page, command) => {
-  await page.type(command.selector, command.value, { delay: 50 });
+  await page.type(command.selector, command.text, { delay: 50 });
 };
 
 const submit_form = async (page, command) => {
@@ -78,5 +79,5 @@ const click = async (page, command) => {
 };
 
 const set_timeout = async (page, command) => {
-  await page.waitFor(command.duration);
+  await page.waitFor(parseInt(command.duration));
 };

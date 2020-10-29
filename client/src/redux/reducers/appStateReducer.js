@@ -1,6 +1,7 @@
 const initialState = {
   popup_type: "NONE",
   popup_data: {},
+  saving: false,
 };
 
 export default function (state = initialState, action) {
@@ -19,6 +20,16 @@ export default function (state = initialState, action) {
       return {
         ...state,
         popup_data: action.payload,
+      };
+    case "TOGGLE_SAVING":
+      return {
+        ...state,
+        saving: !state.saving,
+      };
+    case "TOGGLE_EXECUTING":
+      return {
+        ...state,
+        executing: !state.executing,
       };
     default:
       return state;
