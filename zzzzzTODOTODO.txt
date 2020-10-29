@@ -1,5 +1,0 @@
-Add info bubbles to everything anybody might have a question about
-Add Validation to everything that somebody might fuck up
-Add Popup for script save that gives the user the option to download zip file of script or save locally
-Add the ability to populate input with variable
-Acttions container overflows with too many open items, fix it
