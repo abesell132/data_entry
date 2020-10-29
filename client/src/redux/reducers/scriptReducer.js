@@ -3,6 +3,7 @@ const initialState = {
   variables: [],
   json: [],
   list: [],
+  generated: [],
 };
 
 export default function (state = initialState, action) {
@@ -46,6 +47,16 @@ export default function (state = initialState, action) {
       return {
         ...state,
         variables: [],
+      };
+    case "SET_GENERATED_VARIABLES":
+      return {
+        ...state,
+        generated: action.payload,
+      };
+    case "CLEAR_GENERATED_VARIABLES":
+      return {
+        ...state,
+        generated: [],
       };
     default:
       return state;

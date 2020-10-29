@@ -21,16 +21,15 @@ export const renameScript = (name, id) => (dispatch) => {
 };
 
 export const executeScript = (id) => (dispatch) => {
+  dispatch({ type: "CLEAR_GENERATED_VARIABLES" });
   const state = store.getState();
   let newState = state.script.variables;
   axios
     .post("http://localhost:5000/api/scripts/executeScript", { id })
     .then((res) => {
-      for (let a = 0; a < res.data.variables.length; a++) {
-        newState.push(res.data.variables[a]);
-      }
-      dispatch({ type: "ADD_VARIABLES", payload: newState });
+      dispatch({ type: "SET_GENERATED_VARIABLES", payload: res.data.variables });
       dispatch(saveScript({ variables: newState }, id));
+      dispatch({ type: "SET_POPUP_TYPE", payload: "" });
     })
     .catch((err) => {
       if (err) throw err;
@@ -60,8 +59,10 @@ export const queryScripts = () => (dispatch) => {
 };
 
 export const findOneScript = (id) => (dispatch) => {
+  console.log(id);
   axios.post("http://localhost:5000/api/scripts/getScript", { id }).then((res) => {
     dispatch(addCommands(res.data.commands));
+    console.log(res.data);
     dispatch({ type: "ADD_VARIABLES", payload: res.data.variables });
     dispatch({ type: "UPDATE_CURRENT_SCRIPT", payload: id });
     dispatch({ type: "UPDATE_SCRIPT_NAME", payload: res.data.name });
@@ -88,17 +89,23 @@ export const clearCurrentScript = () => (dispatch) => {
 
 export const deleteVariable = (name, generated = 0, index) => (dispatch) => {
   const state = store.getState();
-  axios
-    .post(`http://localhost:5000/api/scripts/variableDelete/${state.script.currentScript}/${name}`, { generated })
-    .then(() => {
-      let newVariables = state.script.variables;
-      newVariables.splice(index, 1);
-      dispatch({ type: "ADD_VARIABLES", payload: newVariables });
-      dispatch(saveScript({ variables: newVariables }, state.script.currentScript));
-    })
-    .catch((err) => {
-      if (err) throw err;
-    });
+  if (generated) {
+    let newGenVars = state.script.generated;
+    newGenVars.splice(index, 1);
+    dispatch({ type: "SET_GENERATED_VARIABLES", payload: newGenVars });
+  } else {
+    axios
+      .post(`http://localhost:5000/api/scripts/variableDelete/${state.script.currentScript}/${name}`, { generated })
+      .then(() => {
+        let newVariables = state.script.variables;
+        newVariables.splice(index, 1);
+        dispatch({ type: "ADD_VARIABLES", payload: newVariables });
+        dispatch(saveScript({ variables: newVariables }, state.script.currentScript));
+      })
+      .catch((err) => {
+        if (err) throw err;
+      });
+  }
 };
 export const uploadVariable = (file) => (dispatch) => {
   let config = {

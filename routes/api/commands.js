@@ -1,13 +1,25 @@
 const puppeteer = require("puppeteer");
+const path = require("path");
+const fs = require("fs");
 
-const executeCommands = async (commands, id) => {
+const executeCommands = async (commands, id, script) => {
   const write_path = "scripts/" + id + "/";
+  const directory = write_path + "generated";
+  fs.readdir(directory, (err, files) => {
+    if (err) throw err;
+    for (const file of files) {
+      fs.unlink(path.join(directory, file), (err) => {
+        if (err) throw err;
+      });
+    }
+  });
+
+  // let commands = script.commands;
   let response = {
     id: id,
     variables: [],
     errors: [],
   };
-
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
   await init_page(page);
@@ -23,7 +35,9 @@ const executeCommands = async (commands, id) => {
         continue;
       case "SCREENSHOT":
         await screenshot(page, commands[0], write_path);
-        await response.variables.push({ type: "image", name: commands[0].name, type: "generated" });
+        if (!script.variables.includes({ type: "image", name: commands[0].name, type: "generated" })) {
+          await response.variables.push({ type: "image", name: commands[0].name, type: "generated" });
+        }
         await commands.shift();
         continue;
       case "SET_TIMEOUT":

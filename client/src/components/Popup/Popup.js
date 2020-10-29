@@ -5,6 +5,7 @@ import CommandSelect from "./popups/CommandSelect";
 import NewScript from "./popups/NewScript";
 import VaribleDisplay from "./popups/VariableDisplay";
 import VariableUpload from "./popups/VariableUpload";
+import ExecuteCommands from "./popups/ExecuteCommands";
 
 class Popup extends Component {
   render() {
@@ -19,6 +20,8 @@ class Popup extends Component {
         return <VaribleDisplay />;
       case "VARIABLE_UPLOAD":
         return <VariableUpload />;
+      case "EXECUTE_COMMANDS":
+        return <ExecuteCommands />;
       default:
         return <div style={{ display: "none" }} />;
     }

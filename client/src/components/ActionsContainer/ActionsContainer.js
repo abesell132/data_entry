@@ -63,7 +63,7 @@ class ActionsContainer extends Component {
       },
       this.props.script.currentScript
     );
-    this.props.executeScript(this.props.id);
+    this.props.setPopupType("EXECUTE_COMMANDS");
   }
   toggleEditScriptName() {
     this.setState({

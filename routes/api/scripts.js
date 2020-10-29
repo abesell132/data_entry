@@ -76,7 +76,7 @@ router.post("/executeScript", passport.authenticate("jwt", { session: false }), 
   Script.findOne({ owner: req.user.id, id: req.body.id })
     .then((script) => {
       let scriptCommands = script.commands;
-      commands.executeCommands(scriptCommands, req.body.id).then((response) => res.send(response));
+      commands.executeCommands(scriptCommands, req.body.id, script).then((response) => res.send(response));
     })
     .catch((err) => res.send(err));
 });

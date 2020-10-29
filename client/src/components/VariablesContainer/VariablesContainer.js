@@ -48,6 +48,24 @@ class VariablesContainer extends Component {
               </div>
             );
           })}
+          {this.props.script.generated.map((element, index) => {
+            return (
+              <div key={index} className="variable" onClick={() => this.openVariable({ type: element.type, name: element.name })}>
+                <div className="variable-meta">
+                  <div className="file-type">
+                    <img src={photoImage} alt="Decoration" />
+                  </div>
+                  <div className="file-name">
+                    <h4>Image {element.type === "generated" ? <small>- generated</small> : ""}</h4>
+                    <span>{element.name}</span>
+                  </div>
+                </div>
+                <div className="delete-variable">
+                  <img src={GarbageCan} onClick={(e) => this.deleteVariable(e, element.name, element.type === "generated" ? 1 : 0, index)} alt="Delete Variable" />
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
     );
