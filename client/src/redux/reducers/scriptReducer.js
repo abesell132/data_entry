@@ -38,7 +38,7 @@ export default function (state = initialState, action) {
         ...state,
         json: [...state.json, action.payload],
       };
-    case "ADD_VARIABLES":
+    case "SET_VARIABLES":
       return {
         ...state,
         variables: action.payload,

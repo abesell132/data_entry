@@ -1,7 +1,7 @@
 import React, { Component } from "react";
-import ActionsContainer from "../ActionsContainer/ActionsContainer";
-import VariblesContainer from "../VariablesContainer/VariablesContainer";
-import { clearCurrentScript, findOneScript } from "../../redux/actions/scriptActions";
+import ActionsContainer from "../../layouts/ActionsContainer/ActionsContainer";
+import VariblesContainer from "../../layouts/VariablesContainer/VariablesContainer";
+import { clearCurrentScript, getScript } from "../../redux/actions/scriptActions";
 import "./Script.scss";
 import { connect } from "react-redux";
 
@@ -13,7 +13,7 @@ class App extends Component {
     };
   }
   componentDidMount() {
-    this.props.findOneScript(this.props.match.params.id);
+    this.props.getScript(this.props.match.params.id);
     this.setState({
       scriptID: this.props.match.params.id,
     });
@@ -39,5 +39,5 @@ const mapStateToProps = (state) => ({
 
 export default connect(mapStateToProps, {
   clearCurrentScript,
-  findOneScript,
+  getScript,
 })(App);

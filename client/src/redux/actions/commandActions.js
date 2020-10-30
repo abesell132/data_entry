@@ -1,5 +1,5 @@
 import React from "react";
-import DefaultBlock from "../../elementBlocks/DefaultBlock";
+import DefaultBlock from "../../CommandBlocks/DefaultBlock";
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
 

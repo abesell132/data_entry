@@ -67,7 +67,12 @@ router.post("/getScript", passport.authenticate("jwt", { session: false }), (req
 
 router.post("/deleteScript", passport.authenticate("jwt", { session: false }), (req, res) => {
   Script.findOneAndDelete({ owner: req.user.id, id: req.body.id })
-    .then((script) => res.send(script))
+    .then((script) => {
+      fs.rmdir(path.join(__dirname, "../../scripts/" + req.body.id), { recursive: true }, (err) => {
+        if (err) throw err;
+        res.send("Success");
+      });
+    })
     .catch((err) => res.send(err));
 });
 

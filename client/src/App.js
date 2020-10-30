@@ -8,11 +8,11 @@ import setAuthToken from "./utils/setAuthToken";
 
 import AppPage from "./components/App/index";
 import Home from "./components/Home/Home";
-import Header from "./components/Header/Header";
-import Register from "./components/Authentication/Register/Register";
-import Login from "./components/Authentication/Login/Login";
+import Header from "./layouts/Header/Header";
+import Register from "./pages/Authentication/Register/Register";
+import Login from "./pages/Authentication/Login/Login";
 import Popup from "./components/Popup/Popup";
-import PrivateRoute from "./components/Authentication/PrivateRoute";
+import PrivateRoute from "./pages/Authentication/PrivateRoute";
 
 import { setCurrentUser } from "./redux/actions/authActions";
 import { logUserOut } from "./redux/actions/authActions";
