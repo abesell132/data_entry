@@ -2,32 +2,55 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { deleteCommand, updateCommand } from "../redux/actions/commandActions";
 import GarbageCan from "./../assets/imgs/garbage-can.png";
+import Warning from "./../assets/imgs/warning.png";
 import "./CommandBlock.scss";
+import validateDefaultBlockFields from "../validation/DefaultBlock";
 
 class DefaultBlock extends Component {
   constructor() {
     super();
     this.state = {
       showSettings: false,
+      errors: {},
+      saved: true,
     };
     this.toggleSettings = this.toggleSettings.bind(this);
     this.stopProp = this.stopProp.bind(this);
     this.onChange = this.onChange.bind(this);
     this.deleteBlock = this.deleteBlock.bind(this);
+    this.saveSettings = this.saveSettings.bind(this);
   }
 
-  componentDidMount() {}
+  // shouldComponentUpdate(nextProps, nextState) {}
+
+  saveSettings(toggle = false) {
+    validateDefaultBlockFields(this.props.fields, this.state)
+      .then((values) => {
+        Object.keys(values).map((key) => {
+          this.props.updateCommand(this.props.id, this.props.script.list, this.props.script.json, key, values[key]);
+          return 1;
+        });
+        this.setState({ errors: {}, saved: true });
+        if (toggle) {
+          this.setState({ showSettings: !this.state.showSettings });
+        }
+      })
+      .catch((errors) => {
+        this.setState({ errors });
+      });
+  }
   toggleSettings() {
-    this.setState({
-      showSettings: !this.state.showSettings,
-    });
+    if (this.state.showSettings) {
+      this.saveSettings(true);
+    } else {
+      this.setState({ showSettings: !this.state.showSettings });
+    }
   }
   stopProp(e) {
     e.stopPropagation();
   }
   onChange(e) {
-    this.setState({ [e.target.name]: e.target.value });
-    this.props.updateCommand(this.props.id, this.props.script.list, this.props.script.json, e.target.name, e.target.value);
+    this.setState({ [e.target.name]: e.target.value, saved: false });
   }
   deleteBlock(e) {
     e.stopPropagation();
@@ -40,6 +63,13 @@ class DefaultBlock extends Component {
         <div className="controls">
           <div className="name">{this.props.name}</div>
           <div>
+            {this.state.saved ? (
+              ""
+            ) : (
+              <span className="not-saved">
+                <img src={Warning} alt="Not Saved" />
+              </span>
+            )}
             <img src={GarbageCan} className="delete-command" onClick={this.deleteBlock} alt="Delete Block" />
           </div>
         </div>
@@ -47,9 +77,13 @@ class DefaultBlock extends Component {
           {this.props.fields.map((field, index) => (
             <div key={index}>
               {field.label ? <label htmlFor={field.slug}>{field.label}</label> : ""}
+              {field.slug in this.state.errors ? <div class="field-error">{this.state.errors[field.slug]}</div> : ""}
               {field.inputType ? <input type={field.type} name={field.slug} value={this.state[field.slug] ? this.state[field.slug] : field.value} onChange={this.onChange} /> : ""}
             </div>
           ))}
+          <button className="save-link" onClick={() => this.saveSettings()}>
+            Save
+          </button>
         </div>
       </div>
     );

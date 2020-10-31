@@ -4,13 +4,12 @@
   max-width: 400px;
   border: 1px solid #ccc;
 }
-.action > div {
+.action > .controls {
   display: inline-block;
   font-size: 18px;
   padding: 10px 15px;
 }
 .action:hover {
-  background: #f7f7f7;
   cursor: pointer;
 }
 .action .controls {
@@ -34,7 +33,7 @@
   height: auto;
   background: #eee;
   overflow: hidden;
-  padding: 20px;
+  padding: 10px 15px 15px;
 }
 .settings * {
   animation: fadeIn 0.25s ease-in;
@@ -42,7 +41,6 @@
 .settings label {
   display: block;
   margin-top: 5px;
-  padding-bottom: 5px;
   font-size: 14px;
 }
 .settings input {
@@ -52,4 +50,42 @@
   padding: 10px;
   box-sizing: border-box;
   margin-bottom: 10px;
+}
+
+.settings .field-error {
+  font-size: 14px;
+  color: #c0392b;
+  font-style: italic;
+}
+.not-saved {
+  position: relative;
+}
+.not-saved:hover::after {
+  position: absolute;
+  z-index: 99999;
+  border-radius: 2px;
+  left: 50%;
+  top: -5px;
+  transform: translate(-50%, -100%);
+  padding: 1px 3px;
+  font-size: 13px;
+  white-space: nowrap;
+  width: auto;
+  background: #ffffff;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.25);
+  content: "Block Not Saved";
+}
+
+.save-link {
+  padding: 4px 10px;
+  background: #3298db;
+  margin: 0 auto;
+  border-radius: 2px;
+  font-size: 14px;
+  display: inline-block;
+  margin-top: 5px;
+  color: #ffffff;
+}
+.save-link:hover {
+  background: #2980b9;
 }

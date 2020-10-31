@@ -113,28 +113,33 @@ class ActionsContainer extends Component {
             </button>
           </div>
         </div>
-        <div className="actions-list">
-          <DragDropContext onDragEnd={this.onDragEnd}>
-            <Droppable droppableId="droppable">
-              {(provided) => (
-                <div {...provided.droppableProps} ref={provided.innerRef}>
-                  {this.props.script.list.map((item, index) => (
-                    <Draggable key={item.props.id} draggableId={item.props.id} index={index} className="action-draggable">
-                      {(provided) => (
-                        <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
-                          {item}
-                        </div>
-                      )}
-                    </Draggable>
-                  ))}
-                  {provided.placeholder}
-                </div>
-              )}
-            </Droppable>
-          </DragDropContext>
-        </div>
-        <div id="add-action" onClick={this.openPopup}>
-          <img src={Plus} style={{ width: "100%" }} alt="Add Command" />
+        <div className="actions-scrollable">
+          <div className="actions-list">
+            <DragDropContext onDragEnd={this.onDragEnd}>
+              <Droppable droppableId="droppable">
+                {(provided) => (
+                  <div {...provided.droppableProps} ref={provided.innerRef}>
+                    {this.props.script.list.map((item, index) => {
+                      console.log(item);
+                      return (
+                        <Draggable key={item.props.id} draggableId={item.props.id} index={index} className="action-draggable">
+                          {(provided) => (
+                            <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+                              {item}
+                            </div>
+                          )}
+                        </Draggable>
+                      );
+                    })}
+                    {provided.placeholder}
+                  </div>
+                )}
+              </Droppable>
+            </DragDropContext>
+          </div>
+          <div id="add-action" onClick={this.openPopup}>
+            <img src={Plus} style={{ width: "100%" }} alt="Add Command" />
+          </div>
         </div>
       </div>
     );

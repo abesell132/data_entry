@@ -40,32 +40,32 @@ export const updateCommand = (id, commandsList, commandsJSON, name, value) => (d
 
 export const addCommands = (commands, ret = false) => (dispatch) => {
   for (let a = 0; a < commands.length; a++) {
-    let uniqueID = uuidv4();
     switch (commands[a].type) {
       case "LOAD_URL":
-        load_url(commands[a], uniqueID, dispatch);
+        load_url(commands[a], dispatch);
         break;
       case "CLICK":
-        click(commands[a], uniqueID, dispatch);
+        click(commands[a], dispatch);
         break;
       case "SCREENSHOT":
-        screenshot(commands[a], uniqueID, dispatch);
+        screenshot(commands[a], dispatch);
         break;
       case "SET_TIMEOUT":
-        set_timeout(commands[a], uniqueID, dispatch);
+        set_timeout(commands[a], dispatch);
         break;
       case "SUBMIT_FORM":
-        submit_form(commands[a], uniqueID, dispatch);
+        submit_form(commands[a], dispatch);
         break;
       case "TYPE":
-        type(commands[a], uniqueID, dispatch);
+        type(commands[a], dispatch);
         break;
       default:
         break;
     }
   }
 };
-const type = (command, uuid, dispatch) => {
+const type = (command, dispatch) => {
+  let uuid = command.id ? command.id : uuidv4();
   let element = (
     <DefaultBlock
       name="Type"
@@ -84,7 +84,8 @@ const type = (command, uuid, dispatch) => {
   }
 };
 
-const load_url = (command, uuid, dispatch = false) => {
+const load_url = (command, dispatch = false) => {
+  let uuid = command.id ? command.id : uuidv4();
   let element = (
     <DefaultBlock
       name="Load URL"
@@ -107,7 +108,8 @@ const load_url = (command, uuid, dispatch = false) => {
   }
 };
 
-const click = (command, uuid, dispatch) => {
+const click = (command, dispatch) => {
+  let uuid = command.id ? command.id : uuidv4();
   let element = (
     <DefaultBlock
       name="Click"
@@ -130,7 +132,8 @@ const click = (command, uuid, dispatch) => {
   }
 };
 
-const screenshot = (command, uuid, dispatch) => {
+const screenshot = (command, dispatch) => {
+  let uuid = command.id ? command.id : uuidv4();
   let element = (
     <DefaultBlock
       name="Screenshot"
@@ -153,7 +156,8 @@ const screenshot = (command, uuid, dispatch) => {
   }
 };
 
-const set_timeout = (command, uuid, dispatch) => {
+const set_timeout = (command, dispatch) => {
+  let uuid = command.id ? command.id : uuidv4();
   let element = (
     <DefaultBlock
       name="Set Timeout"
@@ -176,7 +180,8 @@ const set_timeout = (command, uuid, dispatch) => {
   }
 };
 
-const submit_form = (command, uuid, dispatch) => {
+const submit_form = (command, dispatch) => {
+  let uuid = command.id ? command.id : uuidv4();
   let element = (
     <DefaultBlock
       name="Submit Form"
