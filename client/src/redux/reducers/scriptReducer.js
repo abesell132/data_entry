@@ -2,7 +2,6 @@ const initialState = {
   name: "",
   variables: [],
   json: [],
-  list: [],
   generated: [],
 };
 
@@ -18,20 +17,10 @@ export default function (state = initialState, action) {
         ...state,
         currentScript: action.payload,
       };
-    case "UPDATE_COMMAND_LIST":
-      return {
-        ...state,
-        list: action.payload,
-      };
     case "UPDATE_COMMAND_JSON":
       return {
         ...state,
         json: action.payload,
-      };
-    case "ADD_COMMAND_LIST":
-      return {
-        ...state,
-        list: [...state.list, action.payload],
       };
     case "ADD_COMMAND_JSON":
       return {

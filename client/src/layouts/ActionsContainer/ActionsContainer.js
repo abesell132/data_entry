@@ -5,6 +5,8 @@ import { saveScript, executeScript, renameScript } from "../../redux/actions/scr
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import Plus from "../../assets/imgs/plus.png";
 import edit from "../../assets/imgs/edit.png";
+import DefaultBlock from "../../CommandBlocks/DefaultBlock";
+import getDefaultBlockProps from "../../CommandBlocks/DefaultBlockProps";
 import "./index.scss";
 import { connect } from "react-redux";
 
@@ -22,6 +24,7 @@ class ActionsContainer extends Component {
     this.state = {
       scriptName: "",
       editScriptName: false,
+      saving: false,
     };
     this.openPopup = this.openPopup.bind(this);
     this.executeCommands = this.executeCommands.bind(this);
@@ -33,13 +36,11 @@ class ActionsContainer extends Component {
   }
 
   onDragEnd(result) {
-    // dropped outside the list
     if (!result.destination) {
       return;
     }
-    const items = reorder(this.props.script.list, result.source.index, result.destination.index);
     const itemsJSON = reorder(this.props.script.json, result.source.index, result.destination.index);
-    this.props.reorderCommands(items, itemsJSON);
+    this.props.reorderCommands(itemsJSON);
   }
   openPopup() {
     this.props.setPopupType("COMMAND_SELECT");
@@ -119,13 +120,13 @@ class ActionsContainer extends Component {
               <Droppable droppableId="droppable">
                 {(provided) => (
                   <div {...provided.droppableProps} ref={provided.innerRef}>
-                    {this.props.script.list.map((item, index) => {
-                      console.log(item);
+                    {this.props.script.json.map((item, index) => {
+                      let elementProps = getDefaultBlockProps(item);
                       return (
-                        <Draggable key={item.props.id} draggableId={item.props.id} index={index} className="action-draggable">
+                        <Draggable key={item.id} draggableId={item.id} index={index} className="action-draggable">
                           {(provided) => (
                             <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
-                              {item}
+                              {<DefaultBlock {...elementProps} index={index} />}
                             </div>
                           )}
                         </Draggable>

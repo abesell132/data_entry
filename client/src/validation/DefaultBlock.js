@@ -1,16 +1,13 @@
 const Validator = require("validator");
 const isEmpty = require("./is-empty");
-console.log(typeof isEmpty);
-
 module.exports = function validateDefaultBlockFields(fields, state) {
-  console.log(fields);
   let errors = {};
   let values = {};
   for (let a = 0; a < fields.length; a++) {
     let value;
     switch (fields[a].slug) {
       case "url":
-        value = state.url === undefined ? fields[a].value : state.url;
+        value = isEmpty(state.url) ? fields[a].value : state.url;
         if (Validator.isEmpty(value)) {
           errors.url = "Address cannot be blank";
           break;
@@ -21,7 +18,7 @@ module.exports = function validateDefaultBlockFields(fields, state) {
         values.url = value;
         break;
       case "name":
-        value = state.name === undefined ? fields[a].value : state.name;
+        value = isEmpty(state.name) ? fields[a].value : state.name;
         if (Validator.isEmpty(value)) {
           errors.name = "File path cannot be blank";
           break;
@@ -32,7 +29,7 @@ module.exports = function validateDefaultBlockFields(fields, state) {
         values.name = value;
         break;
       case "selector":
-        value = state.selector === undefined ? fields[a].value : state.selector;
+        value = isEmpty(state.selector) ? fields[a].value : state.selector;
         if (Validator.isEmpty(value)) {
           errors.selector = "Selector cannot be blank";
           break;
@@ -40,7 +37,7 @@ module.exports = function validateDefaultBlockFields(fields, state) {
         values.selector = value;
         break;
       case "text":
-        value = state.text === undefined ? fields[a].value : state.text;
+        value = isEmpty(state.text) ? fields[a].value : state.text;
         if (Validator.isEmpty(value)) {
           errors.text = "Text cannot be blank";
           break;
@@ -48,7 +45,7 @@ module.exports = function validateDefaultBlockFields(fields, state) {
         values.text = value;
         break;
       case "duration":
-        value = state.duration === undefined ? fields[a].value : state.duration;
+        value = isEmpty(state.duration) ? fields[a].value : state.duration;
         if (Validator.isEmpty(value)) {
           errors.duration = "Duration cannot be blank";
           break;
@@ -64,6 +61,7 @@ module.exports = function validateDefaultBlockFields(fields, state) {
 
   return new Promise((resolve, reject) => {
     if (isEmpty(errors)) {
+      console.log(values);
       resolve(values);
     } else {
       reject(errors);

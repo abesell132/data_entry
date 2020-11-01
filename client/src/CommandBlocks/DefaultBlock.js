@@ -26,8 +26,8 @@ class DefaultBlock extends Component {
   saveSettings(toggle = false) {
     validateDefaultBlockFields(this.props.fields, this.state)
       .then((values) => {
-        Object.keys(values).map((key) => {
-          this.props.updateCommand(this.props.id, this.props.script.list, this.props.script.json, key, values[key]);
+        Object.keys(values).map((key, index) => {
+          this.props.updateCommand(this.props.id, key, values[key]);
           return 1;
         });
         this.setState({ errors: {}, saved: true });
@@ -54,7 +54,7 @@ class DefaultBlock extends Component {
   }
   deleteBlock(e) {
     e.stopPropagation();
-    this.props.deleteCommand(this.props.id, this.props.script.list, this.props.script.json);
+    this.props.deleteCommand(this.props.index);
   }
   render() {
     let display = this.state.showSettings ? "block" : "none";
@@ -97,8 +97,8 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  deleteCommand: (id, commandsList, commandJSON) => dispatch(deleteCommand(id, commandsList, commandJSON)),
-  updateCommand: (id, commandsList, commandJSON, field, value) => dispatch(updateCommand(id, commandsList, commandJSON, field, value)),
+  deleteCommand: (id) => dispatch(deleteCommand(id)),
+  updateCommand: (id, field, value) => dispatch(updateCommand(id, field, value)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(DefaultBlock);

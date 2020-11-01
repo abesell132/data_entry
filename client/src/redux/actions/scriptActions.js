@@ -1,6 +1,7 @@
 import axios from "axios";
 import { addCommands } from "./commandActions";
 import store from "../store";
+import isEmpty from "../../validation/is-empty";
 
 export const addScript = (name) => (dispatch) => {
   const state = store.getState();
@@ -17,6 +18,10 @@ export const addScript = (name) => (dispatch) => {
 };
 
 export const saveScript = (script = {}, id) => (dispatch) => {
+  if (isEmpty(id)) {
+    let state = store.getState();
+    id = state.script.currentScript;
+  }
   axios.post("http://localhost:5000/api/scripts/updateScript", { script, id }).catch((err) => {
     if (err) throw err;
   });
