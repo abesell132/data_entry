@@ -21,23 +21,33 @@ class DefaultBlock extends Component {
     this.saveSettings = this.saveSettings.bind(this);
   }
 
-  // shouldComponentUpdate(nextProps, nextState) {}
+  componentDidUpdate(prevProps) {
+    if (prevProps.save !== this.props.save && typeof this.props.save === "function") {
+      this.saveSettings()
+        .then(() => this.props.save())
+        .catch((errors) => this.props.save(errors));
+    }
+  }
 
   saveSettings(toggle = false) {
-    validateDefaultBlockFields(this.props.fields, this.state)
-      .then((values) => {
-        Object.keys(values).map((key, index) => {
-          this.props.updateCommand(this.props.id, key, values[key]);
-          return 1;
+    return new Promise((resolve, reject) => {
+      validateDefaultBlockFields(this.props.fields, this.state)
+        .then((values) => {
+          Object.keys(values).map((key, index) => {
+            this.props.updateCommand(this.props.id, key, values[key]);
+            return 1;
+          });
+          this.setState({ errors: {}, saved: true });
+          resolve();
+          if (toggle) {
+            this.setState({ showSettings: !this.state.showSettings });
+          }
+        })
+        .catch((errors) => {
+          this.setState({ errors });
+          reject(errors);
         });
-        this.setState({ errors: {}, saved: true });
-        if (toggle) {
-          this.setState({ showSettings: !this.state.showSettings });
-        }
-      })
-      .catch((errors) => {
-        this.setState({ errors });
-      });
+    });
   }
   toggleSettings() {
     if (this.state.showSettings) {
@@ -77,13 +87,10 @@ class DefaultBlock extends Component {
           {this.props.fields.map((field, index) => (
             <div key={index}>
               {field.label ? <label htmlFor={field.slug}>{field.label}</label> : ""}
-              {field.slug in this.state.errors ? <div class="field-error">{this.state.errors[field.slug]}</div> : ""}
+              {field.slug in this.state.errors ? <div className="field-error">{this.state.errors[field.slug]}</div> : ""}
               {field.inputType ? <input type={field.type} name={field.slug} value={this.state[field.slug] ? this.state[field.slug] : field.value} onChange={this.onChange} /> : ""}
             </div>
           ))}
-          <button className="save-link" onClick={() => this.saveSettings()}>
-            Save
-          </button>
         </div>
       </div>
     );

@@ -9,6 +9,7 @@ import DefaultBlock from "../../CommandBlocks/DefaultBlock";
 import getDefaultBlockProps from "../../CommandBlocks/DefaultBlockProps";
 import "./index.scss";
 import { connect } from "react-redux";
+import isEmpty from "../../validation/is-empty";
 
 // a little function to help us with reordering the result
 const reorder = (list, startIndex, endIndex) => {
@@ -25,6 +26,7 @@ class ActionsContainer extends Component {
       scriptName: "",
       editScriptName: false,
       saving: false,
+      commandErrors: false,
     };
     this.openPopup = this.openPopup.bind(this);
     this.executeCommands = this.executeCommands.bind(this);
@@ -33,6 +35,30 @@ class ActionsContainer extends Component {
     this.toggleEditScriptName = this.toggleEditScriptName.bind(this);
     this.onChange = this.onChange.bind(this);
     this.renameScript = this.renameScript.bind(this);
+    this.getCommandBlockErrors = this.getCommandBlockErrors.bind(this);
+    this.startSave = this.startSave.bind(this);
+  }
+
+  getCommandBlockErrors(errors) {
+    if (!isEmpty(errors)) {
+      this.setState({ commandErrors: true });
+    }
+  }
+  startSave() {
+    this.setState(
+      {
+        saving: true,
+        commandErrors: false,
+      },
+      () => {
+        setTimeout(
+          function () {
+            this.setState({ saving: false });
+          }.bind(this),
+          1000
+        );
+      }
+    );
   }
 
   onDragEnd(result) {
@@ -46,14 +72,21 @@ class ActionsContainer extends Component {
     this.props.setPopupType("COMMAND_SELECT");
   }
   saveScript() {
-    this.props.saveScript(
-      {
-        commands: this.props.script.json,
-        variables: this.props.script.variables,
-        name: this.props.script.name,
-      },
-      this.props.script.currentScript
-    );
+    this.startSave();
+    setTimeout(() => {
+      if (!this.state.commandErrors) {
+        this.props.saveScript(
+          {
+            commands: this.props.script.json,
+            variables: this.props.script.variables,
+            name: this.props.script.name,
+          },
+          this.props.script.currentScript
+        );
+      } else {
+        this.props.setPopupType("COMMAND_ERRORS");
+      }
+    }, 500);
   }
   executeCommands() {
     this.props.saveScript(
@@ -71,11 +104,6 @@ class ActionsContainer extends Component {
       editScriptName: !this.state.editScriptName,
     });
   }
-  onChange(e) {
-    this.setState({
-      [e.target.name]: e.target.value,
-    });
-  }
   renameScript() {
     if (this.state.scriptName !== "") {
       this.props.renameScript(this.state.scriptName, this.props.script.currentScript);
@@ -84,6 +112,12 @@ class ActionsContainer extends Component {
     }
     this.toggleEditScriptName();
   }
+  onChange(e) {
+    this.setState({
+      [e.target.name]: e.target.value,
+    });
+  }
+
   render() {
     let scriptName;
     if (!this.state.editScriptName) {
@@ -94,7 +128,7 @@ class ActionsContainer extends Component {
       );
     } else {
       scriptName = (
-        <div class="change-name-form">
+        <div className="change-name-form">
           {<input type="text" name="scriptName" value={this.state.scriptName === "" ? this.props.script.name : this.state.scriptName} onChange={this.onChange} />}
           <input type="submit" className="button pointer" value="Done" onClick={this.renameScript} />
         </div>
@@ -126,7 +160,11 @@ class ActionsContainer extends Component {
                         <Draggable key={item.id} draggableId={item.id} index={index} className="action-draggable">
                           {(provided) => (
                             <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
-                              {<DefaultBlock {...elementProps} index={index} />}
+                              {
+                                <div>
+                                  <DefaultBlock {...elementProps} index={index} save={this.state.saving ? this.getCommandBlockErrors : 0} />
+                                </div>
+                              }
                             </div>
                           )}
                         </Draggable>

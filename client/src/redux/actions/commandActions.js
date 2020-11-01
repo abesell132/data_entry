@@ -25,8 +25,7 @@ export const updateCommand = (id, slug, value) => (dispatch) => {
   let newState = state.script.json;
   for (let a = 0; a < newState.length; a++) {
     if (newState[a].id === id) {
-      let command = newState[a];
-      command[slug] = value;
+      newState[a][slug] = value;
       dispatch(saveScript({ commands: newState }));
       dispatch({ type: "UPDATE_COMMAND_JSON", payload: newState });
     }
