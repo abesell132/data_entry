@@ -1,15 +1,19 @@
 import React, { Component } from "react";
+import isEmpty from "../../validation/is-empty";
+import { connect } from "react-redux";
 import { setPopupType, closePopup } from "../../redux/actions/appStateActions";
 import { executeCommands, reorderCommands } from "../../redux/actions/commandActions";
 import { saveScript, executeScript, renameScript } from "../../redux/actions/scriptActions";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-import Plus from "../../assets/imgs/plus.png";
-import edit from "../../assets/imgs/edit.png";
+
 import DefaultBlock from "../../CommandBlocks/DefaultBlock";
 import getDefaultBlockProps from "../../CommandBlocks/DefaultBlockProps";
+
 import "./index.scss";
-import { connect } from "react-redux";
-import isEmpty from "../../validation/is-empty";
+
+import Plus from "../../assets/imgs/plus.png";
+import SavingAnimation from "../../assets/imgs/saving.svg";
+import edit from "../../assets/imgs/edit.png";
 
 // a little function to help us with reordering the result
 const reorder = (list, startIndex, endIndex) => {
@@ -86,18 +90,26 @@ class ActionsContainer extends Component {
       } else {
         this.props.setPopupType("COMMAND_ERRORS");
       }
-    }, 500);
+    }, 1000);
   }
   executeCommands() {
-    this.props.saveScript(
-      {
-        commands: this.props.script.json,
-        variables: this.props.script.variables,
-        name: this.props.script.name,
-      },
-      this.props.script.currentScript
-    );
-    this.props.setPopupType("EXECUTE_COMMANDS");
+    this.startSave();
+    setTimeout(() => {
+      if (!this.state.commandErrors) {
+        this.props.saveScript(
+          {
+            commands: this.props.script.json,
+            variables: this.props.script.variables,
+            name: this.props.script.name,
+          },
+          this.props.script.currentScript
+        );
+        this.props.setPopupType("EXECUTE_COMMANDS");
+        this.startSave();
+      } else {
+        this.props.setPopupType("COMMAND_ERRORS");
+      }
+    }, 1000);
   }
   toggleEditScriptName() {
     this.setState({
@@ -139,7 +151,8 @@ class ActionsContainer extends Component {
       <div className="actions">
         <div id="action-controls">
           <div>{scriptName}</div>
-          <div>
+          <div id="script-button-options">
+            {this.state.saving ? <img src={SavingAnimation} width="50" class="saving-animation" /> : ""}
             <button id="execute-script" onClick={this.executeCommands}>
               Execute
             </button>
