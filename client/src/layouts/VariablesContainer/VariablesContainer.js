@@ -17,11 +17,11 @@ class VariablesContainer extends Component {
     this.props.setPopupData(data);
   }
   addVariable() {
-    this.props.setPopupType("VARIABLE_UPLOAD");
+    this.props.setPopupType("VARIABLE_CREATE");
   }
-  deleteVariable(e, name, generated, index) {
+  deleteVariable(e, id) {
     e.stopPropagation();
-    this.props.deleteVariable(name, generated, index);
+    this.props.deleteVariable(id);
   }
   render() {
     return (
@@ -32,7 +32,7 @@ class VariablesContainer extends Component {
         <div id="variables-content">
           {this.props.script.variables.map((element, index) => {
             return (
-              <div key={index} className="variable" onClick={() => this.openVariable({ type: element.type, name: element.name })}>
+              <div key={index} className="variable" onClick={() => this.openVariable({ type: "uploaded", id: element.id })}>
                 <div className="variable-meta">
                   <div className="file-type">
                     <img src={photoImage} alt="Decoration" />
@@ -43,14 +43,14 @@ class VariablesContainer extends Component {
                   </div>
                 </div>
                 <div className="delete-variable">
-                  <img src={GarbageCan} onClick={(e) => this.deleteVariable(e, element.name, element.type === "generated" ? 1 : 0, index)} alt="Delete Variable" />
+                  <img src={GarbageCan} onClick={(e) => this.deleteVariable(e, element.id)} alt="Delete Variable" />
                 </div>
               </div>
             );
           })}
           {this.props.script.generated.map((element, index) => {
             return (
-              <div key={index} className="variable" onClick={() => this.openVariable({ type: element.type, name: element.name })}>
+              <div key={index} className="variable" onClick={() => this.openVariable({ type: "generated", id: element.name })}>
                 <div className="variable-meta">
                   <div className="file-type">
                     <img src={photoImage} alt="Decoration" />

@@ -10,11 +10,6 @@ export const deleteCommand = (index) => (dispatch) => {
   dispatch({ type: "UPDATE_COMMAND_JSON", payload: newState });
 };
 
-export const executeCommands = (commandsJSON) => (dispatch) => {
-  axios.post("http://localhost:5000/api/commands/do", { data: commandsJSON }).catch((err) => {
-    if (err) throw err;
-  });
-};
 export const reorderCommands = (newJSON) => (dispatch) => {
   dispatch({ type: "UPDATE_COMMAND_JSON", payload: newJSON });
   dispatch(saveScript({ commands: newJSON }));

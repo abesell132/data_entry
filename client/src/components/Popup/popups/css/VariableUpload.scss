@@ -1,24 +1,66 @@
 .variable-upload {
+  #popup-content.var-types {
+    padding: 30px 20px !important;
+  }
   #popup-content {
-    padding: 20px;
-    section > div {
-      min-width: 20vw;
-      border: 1px solid #ddd;
-      padding: 20px;
+    width: 400px;
+    padding: 30px 20px 0 !important;
+
+    .goBack {
+      color: #3298db;
       text-align: center;
+      margin: 15px 0 17px;
+    }
+
+    .container {
+      display: flex;
+      height: 100%;
+      width: 90%;
+      margin: 0 auto;
+      flex-direction: column;
+      justify-content: center;
 
       h3 {
-        margin: 0 0 0;
-        font-size: 28px;
-      }
-      h4 {
         margin: 0 0 10px;
-        font-weight: 400;
-        font-size: 24px;
+        font-size: 28px;
+        text-align: center;
       }
-      button {
-        min-width: 45%;
-        font-size: 18px;
+      .option {
+        border: 1px solid #ddd;
+        height: 50px;
+        box-sizing: border-box;
+        max-width: 50%;
+        padding: 10px;
+        border-radius: 4px;
+        margin: 5px;
+        min-width: calc(100% - 10px);
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        img {
+          width: 16px;
+          margin-right: 10px;
+        }
+      }
+      section > div {
+        min-width: 20vw;
+        border: 1px solid #ddd;
+        padding: 20px;
+        text-align: center;
+
+        h3 {
+          margin: 0 0 0;
+          font-size: 28px;
+        }
+        h4 {
+          margin: 0 0 10px;
+          font-weight: 400;
+          font-size: 24px;
+        }
+        button {
+          min-width: 45%;
+          font-size: 18px;
+        }
       }
     }
   }

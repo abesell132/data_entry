@@ -152,7 +152,7 @@ class ActionsContainer extends Component {
         <div id="action-controls">
           <div>{scriptName}</div>
           <div id="script-button-options">
-            {this.state.saving ? <img src={SavingAnimation} width="50" class="saving-animation" /> : ""}
+            {this.state.saving ? <img src={SavingAnimation} width="50" class="saving-animation" alt="saving animation" /> : ""}
             <button id="execute-script" onClick={this.executeCommands}>
               Execute
             </button>
@@ -205,7 +205,6 @@ const mapStateToProps = (state) => ({
 });
 
 export default connect(mapStateToProps, {
-  executeCommands,
   setPopupType,
   closePopup,
   executeScript,

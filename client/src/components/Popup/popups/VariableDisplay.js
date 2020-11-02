@@ -38,7 +38,7 @@ class NewScript extends Component {
         <div id="popup-container" onClick={this.stopProp}>
           <div id="popup-content" className="image">
             <img
-              src={`http://localhost:5000/api/scripts/variable/${this.props.script.currentScript}/${this.props.appState.popup_data.type}/${this.props.appState.popup_data.name}`}
+              src={`http://localhost:5000/api/scripts/variable/${this.props.script.currentScript}/${this.props.appState.popup_data.type}/${this.props.appState.popup_data.id}`}
               alt="Variable Display Popup"
             />
           </div>

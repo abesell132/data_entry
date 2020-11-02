@@ -37,6 +37,7 @@ export const executeScript = (id) => (dispatch) => {
   axios
     .post("http://localhost:5000/api/scripts/executeScript", { id })
     .then((res) => {
+      console.log(res.data);
       dispatch({ type: "SET_GENERATED_VARIABLES", payload: res.data.variables });
       dispatch({ type: "SET_POPUP_TYPE", payload: "" });
     })
@@ -80,37 +81,26 @@ export const clearCurrentScript = () => (dispatch) => {
   dispatch({ type: "UPDATE_COMMAND_JSON", payload: [] });
 };
 
-export const deleteVariable = (name, generated = 0, index) => (dispatch) => {
+export const deleteVariable = (variableID, generated = 0, index) => (dispatch) => {
   const state = store.getState();
-  if (generated) {
-    let newGenVars = state.script.generated;
-    newGenVars.splice(index, 1);
-    dispatch({ type: "SET_GENERATED_VARIABLES", payload: newGenVars });
-  } else {
-    axios
-      .post(`http://localhost:5000/api/scripts/variableDelete/${state.script.currentScript}/${name}`, { generated })
-      .then(() => {
-        let newVariables = state.script.variables;
-        newVariables.splice(index, 1);
-        dispatch({ type: "SET_VARIABLES", payload: newVariables });
-        dispatch(saveScript({ variables: newVariables }, state.script.currentScript));
-      })
-      .catch((err) => {
-        if (err) throw err;
-      });
-  }
+  axios
+    .post(`http://localhost:5000/api/scripts/deleteVariable`, { variableID, scriptID: state.script.currentScript })
+    .then((res) => {
+      dispatch({ type: "SET_VARIABLES", payload: res.data });
+    })
+    .catch((err) => {
+      if (err) throw err;
+    });
 };
 export const uploadVariable = (file) => (dispatch) => {
   const state = store.getState();
-  let newVariables = state.script.variables;
   let config = { headers: { "Content-Type": "multipart/form-data" } };
   let fd = new FormData();
   fd.append("file", file);
   axios
     .post("http://localhost:5000/api/scripts/variable/" + state.script.currentScript + "/" + file.name, fd, config)
-    .then(() => {
-      newVariables.push({ type: "uploaded", name: file.name });
-      dispatch({ type: "SET_VARIABLES", payload: newVariables });
+    .then((res) => {
+      dispatch({ type: "SET_VARIABLES", payload: res.data });
     })
     .catch((err) => {
       if (err) throw err;

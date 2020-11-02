@@ -1,6 +1,7 @@
 const puppeteer = require("puppeteer");
 const path = require("path");
 const fs = require("fs");
+const { v4: uuidv4 } = require("uuid");
 
 const executeCommands = async (commands, id, script) => {
   const write_path = "scripts/" + id + "/";
@@ -14,7 +15,6 @@ const executeCommands = async (commands, id, script) => {
     }
   });
 
-  // let commands = script.commands;
   let response = {
     id: id,
     variables: [],
@@ -36,7 +36,7 @@ const executeCommands = async (commands, id, script) => {
       case "SCREENSHOT":
         await screenshot(page, commands[0], write_path);
         if (!script.variables.includes({ type: "image", name: commands[0].name, type: "generated" })) {
-          await response.variables.push({ type: "image", name: commands[0].name, type: "generated" });
+          await response.variables.push({ type: "image", name: commands[0].name, type: "generated", id: uuidv4() });
         }
         await commands.shift();
         continue;

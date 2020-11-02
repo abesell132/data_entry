@@ -6,6 +6,7 @@ var formidable = require("formidable");
 const fs = require("fs");
 const passport = require("passport");
 const commands = require("./commands");
+const _ = require("lodash");
 
 // Load User model
 const Script = require("../../models/Script");
@@ -87,10 +88,15 @@ router.post("/executeScript", passport.authenticate("jwt", { session: false }), 
 });
 
 // Get Variable File
-router.get("/variable/:scriptID/:type/:file_name", (req, res) => {
+router.get("/variable/:scriptID/:type/:variableID", (req, res) => {
   Script.findOne({ id: req.params.scriptID })
-    .then(() => {
-      res.sendFile(path.join(__dirname, "../../", "/scripts/" + req.params.scriptID + "/" + req.params.type + "/" + req.params.file_name));
+    .then((script) => {
+      if (req.params.type == "generated") {
+        res.sendFile(path.join(__dirname, "../../", "/scripts/" + req.params.scriptID + "/" + req.params.type + "/" + req.params.variableID));
+      } else {
+        let variable = _.find(script.variables, { id: req.params.variableID });
+        res.sendFile(path.join(__dirname, "../../", "/scripts/" + req.params.scriptID + "/" + req.params.type + "/" + req.params.variableID + "." + getFileExtension(variable.name)));
+      }
     })
     .catch((err) => {
       if (err) throw err;
@@ -103,14 +109,38 @@ router.post("/variable/:scriptID/:file_name", passport.authenticate("jwt", { ses
   Script.findOne({ owner: req.user.id, id: req.params.scriptID })
     .then(() => {
       const form = formidable({ multiples: false, uploadDir: write_path, keepExtensions: true });
-      form.parse(req, (err, fields, files) => {
+      form.parse(req, (err, fields, file) => {
         if (err) {
           next(err);
           return;
         }
-        rename_files(files, write_path);
+        let id = uuidv4();
+        let newVariable = {
+          id: id,
+          name: file.file.name,
+          type: file.file.type,
+        };
+
+        Script.findOneAndUpdate({ id: req.params.scriptID }, { $push: { variables: newVariable } }, { new: true, useFindAndModify: false })
+          .then((script) => {
+            res.send(script.variables);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+
+        rename_file(file, write_path, id);
       });
-      res.send("Success");
+    })
+    .catch((err) => {
+      if (err) throw err;
+    });
+});
+
+router.post("/deleteVariable", passport.authenticate("jwt", { session: false }), (req, res) => {
+  Script.findOneAndUpdate({ owner: req.user.id, id: req.body.scriptID }, { $pull: { variables: { id: req.body.variableID } } }, { new: true, useFindAndModify: false })
+    .then((script) => {
+      res.send(script.variables);
     })
     .catch((err) => {
       if (err) throw err;
@@ -118,8 +148,8 @@ router.post("/variable/:scriptID/:file_name", passport.authenticate("jwt", { ses
 });
 
 router.post("/variableDelete/:scriptID/:file_name", passport.authenticate("jwt", { session: false }), (req, res) => {
-  Script.findOne({ owner: req.user.id, id: req.params.scriptID })
-    .then(() => {
+  Script.findOne({ owner: req.user.id, id: req.body.scriptID })
+    .then((script) => {
       if (req.body.generated) {
         fs.unlinkSync(path.join(__dirname, "../../scripts/" + req.params.scriptID + "/generated/" + req.params.file_name), (err) => {
           if (err) throw err;
@@ -136,10 +166,16 @@ router.post("/variableDelete/:scriptID/:file_name", passport.authenticate("jwt",
     });
 });
 
-module.exports = router;
+function rename_file(uploaded_file, write_path, id) {
+  let fileExtension = getFileExtension(uploaded_file.file.name);
 
-function rename_files(uploaded_file, write_path) {
-  fs.rename(uploaded_file.file.path, write_path + uploaded_file.file.name, (err) => {
+  fs.rename(uploaded_file.file.path, write_path + id + "." + fileExtension, (err) => {
     if (err) throw err;
   });
 }
+
+const getFileExtension = (filename) => {
+  return filename.substring(filename.lastIndexOf(".") + 1, filename.length) || filename;
+};
+
+module.exports = router;

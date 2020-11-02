@@ -4,7 +4,7 @@ import "./Popup.scss";
 import CommandSelect from "./popups/CommandSelect";
 import NewScript from "./popups/NewScript";
 import VaribleDisplay from "./popups/VariableDisplay";
-import VariableUpload from "./popups/VariableUpload";
+import CreateVariable from "./popups/CreateVariable";
 import ExecuteCommands from "./popups/ExecuteCommands";
 import CommandErrors from "./popups/CommandErrors";
 
@@ -19,8 +19,8 @@ class Popup extends Component {
         return <NewScript />;
       case "VARIABLE":
         return <VaribleDisplay />;
-      case "VARIABLE_UPLOAD":
-        return <VariableUpload />;
+      case "VARIABLE_CREATE":
+        return <CreateVariable />;
       case "EXECUTE_COMMANDS":
         return <ExecuteCommands />;
       case "COMMAND_ERRORS":
