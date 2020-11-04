@@ -35,8 +35,8 @@ const executeCommands = async (commands, id, script) => {
         continue;
       case "SCREENSHOT":
         await screenshot(page, commands[0], write_path);
-        if (!script.variables.includes({ type: "image", name: commands[0].name, type: "generated" })) {
-          await response.variables.push({ type: "image", name: commands[0].name, type: "generated", id: uuidv4() });
+        if (!script.variables.includes({ type: "image", name: commands[0].name, imageType: "generated" })) {
+          await response.variables.push({ type: "image", name: commands[0].name, imageType: "generated", id: uuidv4() });
         }
         await commands.shift();
         continue;

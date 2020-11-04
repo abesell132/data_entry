@@ -81,10 +81,33 @@ export const clearCurrentScript = () => (dispatch) => {
   dispatch({ type: "UPDATE_COMMAND_JSON", payload: [] });
 };
 
-export const deleteVariable = (variableID, generated = 0, index) => (dispatch) => {
+export const deleteVariable = (variable) => (dispatch) => {
   const state = store.getState();
   axios
-    .post(`http://localhost:5000/api/scripts/deleteVariable`, { variableID, scriptID: state.script.currentScript })
+    .post(`http://localhost:5000/api/scripts/deleteVariable`, { variable, scriptID: state.script.currentScript })
+    .then((res) => {
+      dispatch({ type: "SET_VARIABLES", payload: res.data });
+    })
+    .catch((err) => {
+      if (err) throw err;
+    });
+};
+
+export const createNewVariable = (variable) => (dispatch) => {
+  const state = store.getState();
+  axios
+    .post(`http://localhost:5000/api/scripts/createVariable`, { variable, scriptID: state.script.currentScript })
+    .then((res) => {
+      dispatch({ type: "SET_VARIABLES", payload: res.data });
+    })
+    .catch((err) => {
+      if (err) throw err;
+    });
+};
+export const updateVariable = (variable) => (dispatch) => {
+  const state = store.getState();
+  axios
+    .post("http://localhost:5000/api/scripts/updateVariable", { variable, scriptID: state.script.currentScript })
     .then((res) => {
       dispatch({ type: "SET_VARIABLES", payload: res.data });
     })

@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import isEmpty from "../../validation/is-empty";
 import { connect } from "react-redux";
 import { setPopupType, closePopup } from "../../redux/actions/appStateActions";
-import { executeCommands, reorderCommands } from "../../redux/actions/commandActions";
+import { reorderCommands } from "../../redux/actions/commandActions";
 import { saveScript, executeScript, renameScript } from "../../redux/actions/scriptActions";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
