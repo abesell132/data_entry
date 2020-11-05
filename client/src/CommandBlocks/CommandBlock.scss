@@ -3,36 +3,32 @@
   border-radius: 5px;
   max-width: 400px;
   border: 1px solid #ccc;
-}
-.action > .controls {
-  display: inline-block;
-  font-size: 18px;
-  padding: 10px 15px;
-}
-.action:hover {
-  cursor: pointer;
-}
-.action .controls {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.actions .controls > .name {
-  font-size: 16px;
-}
-.actions .controls .delete-command {
-  opacity: 0.5;
-}
 
-.actions .controls .delete-command:hover {
-  opacity: 0.8;
+  .controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 5px;
+    background: white;
+    font-size: 18px;
+    padding: 10px 15px;
+
+    .name {
+      font-size: 16px;
+    }
+    .delete-command {
+      opacity: 0.5;
+    }
+    .delete-command:hover {
+      opacity: 0.8;
+    }
+  }
 }
 
 .settings {
   animation: settingsSlide 0.4s ease-in-out;
   height: auto;
   background: #eee;
-  overflow: hidden;
   padding: 10px 15px 15px;
 }
 .settings * {
@@ -43,15 +39,69 @@
   margin-top: 5px;
   font-size: 14px;
 }
-.settings input {
-  width: 100%;
-  border: 1px solid #ddd;
-  font-size: 16px;
-  padding: 10px;
-  box-sizing: border-box;
-  margin-bottom: 10px;
-}
+.settings {
+  .dynamic-fill {
+    display: flex;
+    align-items: center;
 
+    .dynamic-fill-trigger {
+      position: relative;
+      cursor: pointer;
+
+      .Options::-webkit-scrollbar {
+        width: 5px;
+      }
+      .Options::-webkit-scrollbar-track {
+        background: #f1f1f1;
+      }
+      .Options::-webkit-scrollbar-thumb {
+        border-radius: 5px;
+        background: #27ae60;
+      }
+
+      .Options {
+        box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.25);
+        background: white;
+        width: 200px;
+        top: 0;
+        z-index: 1;
+        display: block;
+        overflow-y: auto;
+        list-style: none;
+        padding-inline-start: 0;
+        position: absolute;
+        right: 0;
+        max-height: 100px;
+        border-radius: 3px;
+        li {
+          padding: 5px;
+          text-align: center;
+          border-bottom: 1px solid #ddd;
+        }
+        li:last-of-type {
+          border: none;
+        }
+      }
+    }
+    input {
+      width: 100%;
+      border: 1px solid #ddd;
+      font-size: 16px;
+      padding: 10px;
+      box-sizing: border-box;
+      margin: 5px 0;
+    }
+    img {
+      margin-left: 5px;
+      width: 16px;
+      height: 16px;
+      opacity: 0.5;
+    }
+    img:hover {
+      opacity: 0.8;
+    }
+  }
+}
 .settings .field-error {
   font-size: 14px;
   color: #c0392b;

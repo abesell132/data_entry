@@ -1,14 +1,13 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { deleteVariable } from "../../redux/actions/scriptActions";
-import { setPopupType, setPopupData } from "../../redux/actions/appStateActions";
+import { deleteVariable } from "../../../redux/actions/scriptActions";
+import { setPopupType, setPopupData } from "../../../redux/actions/appStateActions";
 
-import photoImage from "../../assets/imgs/picture.png";
-import StringIcon from "../../assets/imgs/StringIcon.png";
-import NumberIcon from "../../assets/imgs/NumberIcon.png";
-import GarbageCan from "../../assets/imgs/garbage-can.png";
+import PNGIcon from "../../../assets/imgs/picture.png";
+import JPGIcon from "../../../assets/imgs/JPGIcon.png";
+import GarbageCan from "../../../assets/imgs/garbage-can.png";
 
-class Variable extends Component {
+class Image extends Component {
   constructor() {
     super();
     this.state = {
@@ -22,12 +21,8 @@ class Variable extends Component {
     this.onChange = this.onChange.bind(this);
   }
   openVariable(variable) {
-    if (variable.type === "image") {
-      this.props.setPopupType("VARIABLE");
-      this.props.setPopupData(variable);
-    } else {
-      this.toggleSettings();
-    }
+    this.props.setPopupType("VARIABLE");
+    this.props.setPopupData(variable);
   }
   toggleSettings() {
     this.setState({
@@ -83,16 +78,18 @@ export default connect(mapStateToProps, {
   setPopupType,
   deleteVariable,
   setPopupData,
-})(Variable);
+})(Image);
 
 const getVariableImage = (element) => {
-  switch (element.type) {
-    case "string":
-      return StringIcon;
-    case "number":
-      return NumberIcon;
+  switch (element.imageType) {
+    case "png":
+      return PNGIcon;
+    case "jpg":
+      return JPGIcon;
+    case "jpeg":
+      return JPGIcon;
     default:
-      return photoImage;
+      return PNGIcon;
   }
 };
 const getVariableType = (element) => {

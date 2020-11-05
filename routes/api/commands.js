@@ -2,6 +2,7 @@ const puppeteer = require("puppeteer");
 const path = require("path");
 const fs = require("fs");
 const { v4: uuidv4 } = require("uuid");
+const utils = require("../../utils");
 
 const executeCommands = async (commands, id, script) => {
   const write_path = "scripts/" + id + "/";
@@ -35,8 +36,8 @@ const executeCommands = async (commands, id, script) => {
         continue;
       case "SCREENSHOT":
         await screenshot(page, commands[0], write_path);
-        if (!script.variables.includes({ type: "image", name: commands[0].name, imageType: "generated" })) {
-          await response.variables.push({ type: "image", name: commands[0].name, imageType: "generated", id: uuidv4() });
+        if (!script.variables.includes({ type: "image", name: commands[0].name, generated: true, imageType: utils.getFileExtension(commands[0].name) })) {
+          await response.variables.push({ type: "image", name: commands[0].name, generated: true, imageType: utils.getFileExtension(commands[0].name), id: uuidv4() });
         }
         await commands.shift();
         continue;

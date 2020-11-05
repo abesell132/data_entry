@@ -1,6 +1,8 @@
-import { v4 as uuidv4 } from "uuid";
 import store from "../store";
+import getElementConfig from "../../CommandBlocks/ElementConfig";
 import { saveScript } from "./scriptActions";
+import setValue from "../../utils/setValue";
+import getValue from "../../utils/getValue";
 
 export const deleteCommand = (index) => (dispatch) => {
   let state = store.getState();
@@ -9,48 +11,55 @@ export const deleteCommand = (index) => (dispatch) => {
   dispatch({ type: "UPDATE_COMMAND_JSON", payload: newState });
 };
 
-export const reorderCommands = (newJSON) => (dispatch) => {
-  dispatch({ type: "UPDATE_COMMAND_JSON", payload: newJSON });
-  dispatch(saveScript({ commands: newJSON }));
+export const reorderCommands = (context, order) => (dispatch) => {
+  const state = store.getState();
+  let newState = state.script;
+  setValue("json" + context, order, newState);
+  dispatch({ type: "UPDATE_COMMAND_JSON", payload: newState.json });
+  dispatch(saveScript({ commands: newState.json }));
 };
 
-export const updateCommand = (id, slug, value) => (dispatch) => {
+export const updateCommand = (context, slug, value) => (dispatch) => {
   let state = store.getState();
-  let newState = state.script.json;
-  for (let a = 0; a < newState.length; a++) {
-    if (newState[a].id === id) {
-      newState[a][slug] = value;
-      dispatch(saveScript({ commands: newState }));
-      dispatch({ type: "UPDATE_COMMAND_JSON", payload: newState });
-    }
-  }
+  let newState = state.script;
+  setValue("json" + context + "." + slug, value, newState);
+  dispatch(saveScript({ commands: newState.json }));
+  dispatch({ type: "UPDATE_COMMAND_JSON", payload: newState.json });
 };
 
-export const addCommands = (commands) => (dispatch) => {
-  for (let a = 0; a < commands.length; a++) {
-    let uuid = commands[a].id ? commands[a].id : uuidv4();
+// export const updateCommand = (id, slug, value) => (dispatch) => {
+//   let state = store.getState();
+//   let newState = state.script.json;
 
-    switch (commands[a].type) {
-      case "LOAD_URL":
-        dispatch({ type: "ADD_COMMAND_JSON", payload: { type: commands[a].type, url: commands[a].url, id: uuid } });
-        break;
-      case "CLICK":
-        dispatch({ type: "ADD_COMMAND_JSON", payload: { type: commands[a].type, selector: commands[a].selector, id: uuid } });
-        break;
-      case "SCREENSHOT":
-        dispatch({ type: "ADD_COMMAND_JSON", payload: { type: commands[a].type, name: commands[a].name, id: uuid } });
-        break;
-      case "SET_TIMEOUT":
-        dispatch({ type: "ADD_COMMAND_JSON", payload: { type: commands[a].type, duration: commands[a].duration, id: uuid } });
-        break;
-      case "SUBMIT_FORM":
-        dispatch({ type: "ADD_COMMAND_JSON", payload: { type: commands[a].type, selector: commands[a].selector, id: uuid } });
-        break;
-      case "TYPE":
-        dispatch({ type: "ADD_COMMAND_JSON", payload: { type: commands[a].type, selector: commands[a].selector, text: commands[a].text, id: uuid } });
-        break;
-      default:
-        break;
-    }
+//   for (let a = 0; a < newState.length; a++) {
+//     if (newState[a].id === id) {
+//       newState[a][slug] = value;
+//       dispatch(saveScript({ commands: newState }));
+//       dispatch({ type: "UPDATE_COMMAND_JSON", payload: newState });
+//     }
+//   }
+// };
+
+export const setCommands = (commands) => (dispatch) => {
+  dispatch({ type: "UPDATE_COMMAND_JSON", payload: commands });
+};
+export const addCommands = (context, commands, contextCommands) => (dispatch) => {
+  const state = store.getState();
+  let newState = state.script;
+  console.log(contextCommands);
+  for (let a = 0; a < commands.length; a++) {
+    let payload = getElementConfig(commands[a]).addCommandPayload;
+    contextCommands.push(payload);
   }
+
+  setValue("json" + context, contextCommands, newState);
+  dispatch(saveScript({ commands: newState.json }));
+  dispatch({ type: "UPDATE_COMMAND_JSON", payload: newState.json });
+};
+
+export const deleteMe = (context, index, contextCommands) => (dispatch) => {
+  const state = store.getState();
+  let newState = state.script;
+  contextCommands.slice(index, 0);
+  setValue("json" + context, contextCommands, newState);
 };

@@ -4,19 +4,15 @@ import { closePopup } from "../../../redux/actions/appStateActions";
 import { addScript } from "../../../redux/actions/scriptActions";
 import "./css/VariableDisplay.scss";
 
-class NewScript extends Component {
+class VariableDisplay extends Component {
   constructor() {
     super();
     this.state = {
       scriptname: "",
     };
-    this.closePopup = this.closePopup.bind(this);
     this.stopProp = this.stopProp.bind(this);
     this.onChange = this.onChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
-  }
-  closePopup() {
-    this.props.closePopup();
   }
   stopProp(e) {
     e.stopPropagation();
@@ -29,16 +25,19 @@ class NewScript extends Component {
   onSubmit(e) {
     e.preventDefault();
     this.props.addScript(this.state.scriptname);
-    this.closePopup();
+    this.props.closePopup();
   }
 
   render() {
+    let popup_data = this.props.appState.popup_data;
     return (
-      <div id="popup" className="variable-display" style={{ display: this.props.appState.popup_visible }} onClick={this.closePopup}>
+      <div id="popup" className="variable-display" style={{ display: this.props.appState.popup_visible }} onClick={this.props.closePopup}>
         <div id="popup-container" onClick={this.stopProp}>
           <div id="popup-content" className="image">
             <img
-              src={`http://localhost:5000/api/scripts/variable/${this.props.script.currentScript}/${this.props.appState.popup_data.imageType}/${this.props.appState.popup_data.id}`}
+              src={`http://localhost:5000/api/scripts/variable/${this.props.script.currentScript}/${popup_data.generated ? "generated" : "uploaded"}/${
+                popup_data.generated ? popup_data.name : popup_data.id
+              }`}
               alt="Variable Display Popup"
             />
           </div>
@@ -54,4 +53,4 @@ const mapStateToProps = (state) => ({
   script: state.script,
 });
 
-export default connect(mapStateToProps, { closePopup, addScript })(NewScript);
+export default connect(mapStateToProps, { closePopup, addScript })(VariableDisplay);

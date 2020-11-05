@@ -20,7 +20,7 @@ class Standard extends Component {
     e.stopPropagation();
   }
   onClick(command) {
-    this.props.addCommands([command]);
+    this.props.addCommands(this.props.appState.popup_data.context, [command], this.props.appState.popup_data.contextCommands);
     this.props.closePopup();
   }
   render() {

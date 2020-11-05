@@ -1,5 +1,0 @@
-You left off trying to change the variables to work so that when you upload, it creates a new database entry, and the file is stored at {id}.fileExtension, you got the upload part complete, however the fetch variable and delete variable calls don't work because currently the front end is sending the name of the file, which is not what the file is saved as in the back end. 
-
-Note this error when trying to delete a file: 
-
-(node:16420) UnhandledPromiseRejectionWarning: Error: ENOENT: no such file or directory, unlink 'C:\work\data_entry\scripts\0c1bcfe4-f10d-4d90-9c17-a0b0ccc031de\uploaded\pexels-louis-3690511.jpg'

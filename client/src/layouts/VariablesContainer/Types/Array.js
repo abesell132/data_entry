@@ -57,7 +57,6 @@ class Array extends Component {
     let csvValues = this.props.element.value.map((element, index) => {
       return element;
     });
-    console.log(csvValues);
     return (
       <div className={`VariableWrapper ${this.state.showSettings ? "settings-open" : ""}`}>
         <div className="variable" onClick={() => this.toggleSettings()}>

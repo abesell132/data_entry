@@ -41,7 +41,6 @@ class CreateVariable extends Component {
   }
 
   addVariable(type) {
-    console.log(type);
     let newVarible = {};
     switch (type) {
       case "string":

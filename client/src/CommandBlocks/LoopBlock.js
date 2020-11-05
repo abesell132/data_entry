@@ -1,13 +1,16 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { deleteCommand, updateCommand } from "../redux/actions/commandActions";
+import { setPopupType, setPopupData } from "../redux/actions/appStateActions";
 
 import DynamicFill from "../components/DynamicFill/DynamicFill";
-import validateDefaultBlockFields from "../validation/DefaultBlock";
+import ActionList from "../components/ActionList/ActionList";
 
 import GarbageCan from "./../assets/imgs/garbage-can.png";
+import PlusIcon from "./../assets/imgs/plus.png";
 import Warning from "./../assets/imgs/warning.png";
 import "./CommandBlock.scss";
+import "./LoopBlock.scss";
 
 const getDefaultAccepts = (name) => {
   switch (name) {
@@ -16,7 +19,7 @@ const getDefaultAccepts = (name) => {
   }
 };
 
-class DefaultBlock extends Component {
+class LoopBlock extends Component {
   constructor() {
     super();
     this.state = {
@@ -30,6 +33,7 @@ class DefaultBlock extends Component {
     this.deleteBlock = this.deleteBlock.bind(this);
     this.saveSettings = this.saveSettings.bind(this);
     this.setDynamic = this.setDynamic.bind(this);
+    this.addCommand = this.addCommand.bind(this);
   }
 
   onChange(e) {
@@ -41,25 +45,17 @@ class DefaultBlock extends Component {
   }
   saveSettings() {
     return new Promise((resolve, reject) => {
-      validateDefaultBlockFields(this.props.fields, this.state)
-        .then((values) => {
-          Object.keys(values).map((key, index) => {
-            this.props.updateCommand(this.props.blockContext + "." + this.props.index, key, values[key]);
-            return 1;
-          });
-          this.setState({ errors: {}, saved: true });
-          resolve();
-        })
-        .catch((errors) => {
-          this.setState({ errors });
-          reject(errors);
-        });
+      this.props.updateCommand(this.props.blockContext, "array", this.state.array ? this.state.array.split(",") : this.props.array);
+      this.props.updateCommand(this.props.blockContext, "commands", this.props.commands);
+      resolve();
     });
   }
   toggleSettings() {
     this.setState({ showSettings: !this.state.showSettings }, () => {
       if (!this.state.showSettings) {
-        this.saveSettings();
+        this.saveSettings().then(() => {
+          this.setState({ saved: true });
+        });
       }
     });
   }
@@ -70,6 +66,12 @@ class DefaultBlock extends Component {
       [field.slug]: oldState + value,
       saved: false,
     });
+  }
+
+  addCommand() {
+    let commands = this.props.commands;
+    this.props.setPopupType("COMMAND_SELECT");
+    this.props.setPopupData({ context: this.props.blockContext + ".commands", contextCommands: commands });
   }
 
   render() {
@@ -96,11 +98,18 @@ class DefaultBlock extends Component {
               {field.slug in this.state.errors ? <div className="field-error">{this.state.errors[field.slug]}</div> : ""}
 
               <div className="dynamic-fill">
-                {field.inputType ? <input type={field.inputType} name={field.slug} value={this.state[field.slug] ? this.state[field.slug] : field.value} onChange={this.onChange} /> : ""}
+                {field.inputType ? <input type={field.inputType} name={field.slug} value={this.state[field.slug] ? this.state[field.slug] : this.props.array.join()} onChange={this.onChange} /> : ""}
                 <DynamicFill field={field} index={index} context={this.props.blockContext} setDynamic={this.setDynamic} accepts={getDefaultAccepts(this.props.name)} />
               </div>
             </div>
           ))}
+          <label>Commands</label>
+          <div className="loop-commands">
+            <ActionList mapItems={this.props.commands} droppableId={"droppable-asdf"} listContext={this.props.blockContext + ".commands"} />
+          </div>
+          <div className="add-command" onClick={this.addCommand}>
+            <img src={PlusIcon} width="24" />
+          </div>
         </div>
       </div>
     );
@@ -109,13 +118,14 @@ class DefaultBlock extends Component {
 
 const mapStateToProps = (state) => ({
   appState: state.appState,
-  commands: state.commands,
   script: state.script,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   deleteCommand: (id) => dispatch(deleteCommand(id)),
   updateCommand: (blockContext, field, value) => dispatch(updateCommand(blockContext, field, value)),
+  setPopupType: (type) => dispatch(setPopupType(type)),
+  setPopupData: (data) => dispatch(setPopupData(data)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(DefaultBlock);
+export default connect(mapStateToProps, mapDispatchToProps)(LoopBlock);

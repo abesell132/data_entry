@@ -5,7 +5,14 @@
       width: 100%;
     }
   }
-  #variables-content {
+  #generated-content {
+    h3 {
+      text-align: center;
+      margin: 0;
+    }
+  }
+  #variables-content,
+  #generated-content {
     padding: 10px 15px;
 
     .settings-open .variable {

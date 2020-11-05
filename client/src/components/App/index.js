@@ -19,6 +19,7 @@ class App extends Component {
     });
   }
   componentWillUnmount() {
+    console.log("Clearing Current Script");
     this.props.clearCurrentScript();
   }
   render() {

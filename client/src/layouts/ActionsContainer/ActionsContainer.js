@@ -1,27 +1,15 @@
 import React, { Component } from "react";
 import isEmpty from "../../validation/is-empty";
 import { connect } from "react-redux";
-import { setPopupType, closePopup } from "../../redux/actions/appStateActions";
-import { reorderCommands } from "../../redux/actions/commandActions";
+import { setPopupType, closePopup, setPopupData } from "../../redux/actions/appStateActions";
 import { saveScript, executeScript, renameScript } from "../../redux/actions/scriptActions";
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
-import DefaultBlock from "../../CommandBlocks/DefaultBlock";
-import getDefaultBlockProps from "../../CommandBlocks/DefaultBlockProps";
-
+import ActionList from "../../components/ActionList/ActionList";
 import "./index.scss";
 
 import Plus from "../../assets/imgs/plus.png";
 import SavingAnimation from "../../assets/imgs/saving.svg";
 import edit from "../../assets/imgs/edit.png";
-
-// a little function to help us with reordering the result
-const reorder = (list, startIndex, endIndex) => {
-  const result = Array.from(list);
-  const [removed] = result.splice(startIndex, 1);
-  result.splice(endIndex, 0, removed);
-  return result;
-};
 
 class ActionsContainer extends Component {
   constructor() {
@@ -35,7 +23,6 @@ class ActionsContainer extends Component {
     this.openPopup = this.openPopup.bind(this);
     this.executeCommands = this.executeCommands.bind(this);
     this.saveScript = this.saveScript.bind(this);
-    this.onDragEnd = this.onDragEnd.bind(this);
     this.toggleEditScriptName = this.toggleEditScriptName.bind(this);
     this.onChange = this.onChange.bind(this);
     this.renameScript = this.renameScript.bind(this);
@@ -65,15 +52,9 @@ class ActionsContainer extends Component {
     );
   }
 
-  onDragEnd(result) {
-    if (!result.destination) {
-      return;
-    }
-    const itemsJSON = reorder(this.props.script.json, result.source.index, result.destination.index);
-    this.props.reorderCommands(itemsJSON);
-  }
   openPopup() {
     this.props.setPopupType("COMMAND_SELECT");
+    this.props.setPopupData({ context: this.props.blockContext, contextCommands: this.props.script.json });
   }
   saveScript() {
     this.startSave();
@@ -162,33 +143,7 @@ class ActionsContainer extends Component {
           </div>
         </div>
         <div className="actions-scrollable">
-          <div className="actions-list">
-            <DragDropContext onDragEnd={this.onDragEnd}>
-              <Droppable droppableId="droppable">
-                {(provided) => (
-                  <div {...provided.droppableProps} ref={provided.innerRef}>
-                    {this.props.script.json.map((item, index) => {
-                      let elementProps = getDefaultBlockProps(item);
-                      return (
-                        <Draggable key={item.id} draggableId={item.id} index={index} className="action-draggable">
-                          {(provided) => (
-                            <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
-                              {
-                                <div>
-                                  <DefaultBlock {...elementProps} index={index} save={this.state.saving ? this.getCommandBlockErrors : 0} />
-                                </div>
-                              }
-                            </div>
-                          )}
-                        </Draggable>
-                      );
-                    })}
-                    {provided.placeholder}
-                  </div>
-                )}
-              </Droppable>
-            </DragDropContext>
-          </div>
+          <ActionList mapItems={this.props.script.json} droppableId={"droppable-main"} listContext="" />
           <div id="add-action" onClick={this.openPopup}>
             <img src={Plus} style={{ width: "100%" }} alt="Add Command" />
           </div>
@@ -209,6 +164,6 @@ export default connect(mapStateToProps, {
   closePopup,
   executeScript,
   saveScript,
-  reorderCommands,
+  setPopupData,
   renameScript,
 })(ActionsContainer);

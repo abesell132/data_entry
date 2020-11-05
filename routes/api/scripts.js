@@ -3,6 +3,7 @@ const router = express.Router();
 const { v4: uuidv4 } = require("uuid");
 const path = require("path");
 var formidable = require("formidable");
+const utils = require("../../utils");
 const fs = require("fs");
 const passport = require("passport");
 const commands = require("./commands");
@@ -93,7 +94,7 @@ router.post("/createVariable", passport.authenticate("jwt", { session: false }),
       res.send(script.variables);
     })
     .catch((err) => {
-      console.log(err);
+      if (err) throw err;
     });
 });
 
@@ -103,7 +104,7 @@ router.post("/updateVariable", passport.authenticate("jwt", { session: false }),
       res.send(script.variables);
     })
     .catch((err) => {
-      console.log(err);
+      if (err) throw err;
     });
 });
 
@@ -115,7 +116,6 @@ router.get("/variable/:scriptID/:type/:variableID", (req, res) => {
         res.sendFile(path.join(__dirname, "../../", "/scripts/" + req.params.scriptID + "/" + req.params.type + "/" + req.params.variableID));
       } else {
         let variable = _.find(script.variables, { id: req.params.variableID });
-        console.log(variable);
         res.sendFile(path.join(__dirname, "../../", "/scripts/" + req.params.scriptID + "/" + req.params.type + "/" + req.params.variableID + "." + getFileExtension(variable.name)));
       }
     })
@@ -139,7 +139,8 @@ router.post("/variable/:scriptID/:file_name", passport.authenticate("jwt", { ses
         let newVariable = {
           id: id,
           name: file.file.name,
-          imageType: "uploaded",
+          generated: false,
+          imageType: utils.getFileExtension(file.file.name),
           type: "image",
         };
 
@@ -148,7 +149,7 @@ router.post("/variable/:scriptID/:file_name", passport.authenticate("jwt", { ses
             res.send(script.variables);
           })
           .catch((err) => {
-            console.log(err);
+            if (err) throw err;
           });
 
         rename_file(file, write_path, id);
@@ -162,7 +163,6 @@ router.post("/variable/:scriptID/:file_name", passport.authenticate("jwt", { ses
 router.post("/deleteVariable", passport.authenticate("jwt", { session: false }), (req, res) => {
   Script.findOneAndUpdate({ owner: req.user.id, id: req.body.scriptID }, { $pull: { variables: { id: req.body.variable.id } } }, { new: true, useFindAndModify: false })
     .then((script) => {
-      console.log(script);
       if (req.body.variable.type && req.body.variable.type == "image") {
         if (req.body.variable.generated) {
           fs.unlinkSync(path.join(__dirname, "../../scripts/" + req.body.scriptID + "/generated/" + req.body.variable.name), (err) => {
@@ -175,25 +175,6 @@ router.post("/deleteVariable", passport.authenticate("jwt", { session: false }),
         }
       }
       res.send(script.variables);
-    })
-    .catch((err) => {
-      if (err) throw err;
-    });
-});
-
-router.post("/variableDelete/:scriptID/:file_name", passport.authenticate("jwt", { session: false }), (req, res) => {
-  Script.findOne({ owner: req.user.id, id: req.body.scriptID })
-    .then((script) => {
-      if (req.body.generated) {
-        fs.unlinkSync(path.join(__dirname, "../../scripts/" + req.params.scriptID + "/generated/" + req.params.file_name), (err) => {
-          if (err) throw err;
-        });
-      } else {
-        fs.unlinkSync(path.join(__dirname, "../../scripts/" + req.params.scriptID + "/uploaded/" + req.params.file_name), (err) => {
-          if (err) throw err;
-        });
-      }
-      res.send("Removed");
     })
     .catch((err) => {
       if (err) throw err;

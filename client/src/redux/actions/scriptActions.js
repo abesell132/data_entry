@@ -1,5 +1,5 @@
 import axios from "axios";
-import { addCommands } from "./commandActions";
+import { setCommands } from "./commandActions";
 import store from "../store";
 import isEmpty from "../../validation/is-empty";
 
@@ -37,7 +37,6 @@ export const executeScript = (id) => (dispatch) => {
   axios
     .post("http://localhost:5000/api/scripts/executeScript", { id })
     .then((res) => {
-      console.log(res.data);
       dispatch({ type: "SET_GENERATED_VARIABLES", payload: res.data.variables });
       dispatch({ type: "SET_POPUP_TYPE", payload: "" });
     })
@@ -57,7 +56,7 @@ export const getScript = (id) => (dispatch) => {
     dispatch({ type: "UPDATE_CURRENT_SCRIPT", payload: id });
     dispatch({ type: "UPDATE_SCRIPT_NAME", payload: res.data.name });
     dispatch({ type: "SET_VARIABLES", payload: res.data.variables });
-    dispatch(addCommands(res.data.commands));
+    dispatch(setCommands(res.data.commands));
   });
 };
 

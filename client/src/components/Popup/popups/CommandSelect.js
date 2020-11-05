@@ -28,7 +28,7 @@ class CommandSelect extends Component {
     });
   }
   onClick(command) {
-    this.props.addCommands([command]);
+    this.props.addCommands(this.props.appState.popup_data.context, [command], this.props.appState.popup_data.contextCommands);
     this.props.closePopup();
   }
   render() {
@@ -47,8 +47,8 @@ class CommandSelect extends Component {
                 <img src={QuestionMark} alt="More Information" />
               </div>
             </div>
-            <div onClick={() => this.onClick({ type: "SUBMIT_FORM", selector: "" })}>
-              <div>Advanced</div>
+            <div onClick={() => this.onClick({ type: "ARRAY_LOOP", array: [], commands: [] })}>
+              <div>Loop Block</div>
               <div className="action-question-mark">
                 <img src={QuestionMark} alt="More Information" />
               </div>
