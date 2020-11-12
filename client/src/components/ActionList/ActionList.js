@@ -1,8 +1,7 @@
 import React, { Component } from "react";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { connect } from "react-redux";
-import { reorderCommands } from "../../redux/actions/commandActions";
-
+import { reorderCommands, deleteCommand } from "../../redux/actions/commandActions";
 import getElementConfig from "../../CommandBlocks/ElementConfig";
 import LoopBlock from "../../CommandBlocks/LoopBlock";
 import DefaultBlock from "../../CommandBlocks/DefaultBlock";
@@ -22,6 +21,7 @@ class ActionList extends Component {
       commandErrors: false,
     };
     this.onDragEnd = this.onDragEnd.bind(this);
+    this.deleteBlock = this.deleteBlock.bind(this);
   }
   onDragEnd(result) {
     if (!result.destination) {
@@ -30,13 +30,28 @@ class ActionList extends Component {
     const itemsJSON = reorder(this.props.mapItems, result.source.index, result.destination.index);
     this.props.reorderCommands(this.props.listContext, itemsJSON);
   }
+
+  deleteBlock(index) {
+    console.log(index);
+    let items = this.props.mapItems;
+    items.splice(index, 1);
+    this.props.deleteCommand(this.props.listContext, items);
+  }
   render() {
     const getBlockType = (type, elementProps, index) => {
       switch (type) {
         case "ARRAY_LOOP":
-          return <LoopBlock {...elementProps} commandList={elementProps.commands} index={index} blockContext={this.props.listContext !== "" ? this.props.listContext + "." + index : "." + index} />;
+          return (
+            <LoopBlock
+              {...elementProps}
+              commandList={elementProps.commands}
+              index={index}
+              blockContext={this.props.listContext !== "" ? this.props.listContext + "." + index : "." + index}
+              deleteBlock={this.deleteBlock}
+            />
+          );
         default:
-          return <DefaultBlock {...elementProps} index={index} blockContext={this.props.listContext} />;
+          return <DefaultBlock {...elementProps} index={index} blockContext={this.props.listContext} deleteBlock={this.deleteBlock} />;
       }
     };
 
@@ -72,4 +87,4 @@ const mapStateToProps = (state) => ({
   script: state.script,
 });
 
-export default connect(mapStateToProps, { reorderCommands })(ActionList);
+export default connect(mapStateToProps, { reorderCommands, deleteCommand })(ActionList);

@@ -2,14 +2,13 @@ import store from "../store";
 import getElementConfig from "../../CommandBlocks/ElementConfig";
 import { saveScript } from "./scriptActions";
 import setValue from "../../utils/setValue";
-import getValue from "../../utils/getValue";
 
-export const deleteCommand = (index) => (dispatch) => {
-  let state = store.getState();
-  let newState = state.script.json;
-  newState.splice(index, 1);
-  dispatch({ type: "UPDATE_COMMAND_JSON", payload: newState });
-};
+// export const deleteCommand = (index) => (dispatch) => {
+//   let state = store.getState();
+//   let newState = state.script.json;
+//   newState.splice(index, 1);
+//   dispatch({ type: "UPDATE_COMMAND_JSON", payload: newState });
+// };
 
 export const reorderCommands = (context, order) => (dispatch) => {
   const state = store.getState();
@@ -46,13 +45,21 @@ export const setCommands = (commands) => (dispatch) => {
 export const addCommands = (context, commands, contextCommands) => (dispatch) => {
   const state = store.getState();
   let newState = state.script;
-  console.log(contextCommands);
+  console.log(context);
   for (let a = 0; a < commands.length; a++) {
     let payload = getElementConfig(commands[a]).addCommandPayload;
     contextCommands.push(payload);
   }
 
   setValue("json" + context, contextCommands, newState);
+  dispatch(saveScript({ commands: newState.json }));
+  dispatch({ type: "UPDATE_COMMAND_JSON", payload: newState.json });
+};
+
+export const deleteCommand = (context, commands) => (dispatch) => {
+  const state = store.getState();
+  let newState = state.script;
+  setValue("json" + context, commands, newState);
   dispatch(saveScript({ commands: newState.json }));
   dispatch({ type: "UPDATE_COMMAND_JSON", payload: newState.json });
 };

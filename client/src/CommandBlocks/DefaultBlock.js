@@ -37,7 +37,8 @@ class DefaultBlock extends Component {
   }
   deleteBlock(e) {
     e.stopPropagation();
-    this.props.deleteCommand(this.props.index);
+    this.props.deleteBlock(this.props.index);
+    // this.props.deleteCommand(this.props.index);
   }
   saveSettings() {
     return new Promise((resolve, reject) => {
@@ -109,7 +110,6 @@ class DefaultBlock extends Component {
 
 const mapStateToProps = (state) => ({
   appState: state.appState,
-  commands: state.commands,
   script: state.script,
 });
 

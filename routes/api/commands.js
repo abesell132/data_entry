@@ -3,8 +3,10 @@ const path = require("path");
 const fs = require("fs");
 const { v4: uuidv4 } = require("uuid");
 const utils = require("../../utils");
+const _ = require("lodash");
 
-const executeCommands = async (commands, id, script) => {
+const executeCommands = async (commandsList, id, script) => {
+  let commands = commandsList;
   const write_path = "scripts/" + id + "/";
   const directory = write_path + "generated";
   fs.readdir(directory, (err, files) => {
@@ -36,10 +38,13 @@ const executeCommands = async (commands, id, script) => {
         continue;
       case "SCREENSHOT":
         await screenshot(page, commands[0], write_path);
-        if (!script.variables.includes({ type: "image", name: commands[0].name, generated: true, imageType: utils.getFileExtension(commands[0].name) })) {
+        console.log(_.findIndex(response.variables, { type: "image", name: commands[0].name, generated: true, imageType: utils.getFileExtension(commands[0].name) }));
+        if (_.findIndex(response.variables, { type: "image", name: commands[0].name, generated: true, imageType: utils.getFileExtension(commands[0].name) }) == -1) {
           await response.variables.push({ type: "image", name: commands[0].name, generated: true, imageType: utils.getFileExtension(commands[0].name), id: uuidv4() });
         }
+
         await commands.shift();
+        await console.log(response.variables);
         continue;
       case "SET_TIMEOUT":
         await set_timeout(page, commands[0]);
@@ -52,6 +57,11 @@ const executeCommands = async (commands, id, script) => {
       case "TYPE":
         await type(page, commands[0]);
         await commands.shift();
+        continue;
+      case "ARRAY_LOOP":
+        let pushCommands = await array_loop(commands[0]);
+        await commands.shift();
+        commands = await pushCommands.concat(commands);
         continue;
     }
   }
@@ -68,6 +78,17 @@ const init_page = async (page) => {
     deviceScaleFactor: 1,
   });
   return page;
+};
+
+const array_loop = async (loopCommand) => {
+  let pushCommands = [];
+  for (let a = 0; a < loopCommand.array.length; a++) {
+    loopCommand.commands.forEach((command) => {
+      // Add Variable Support Here
+      pushCommands.push(command);
+    });
+  }
+  return pushCommands;
 };
 
 const load_url = async (page, command) => {

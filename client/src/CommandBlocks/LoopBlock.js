@@ -41,7 +41,8 @@ class LoopBlock extends Component {
   }
   deleteBlock(e) {
     e.stopPropagation();
-    this.props.deleteCommand(this.props.index);
+    this.props.deleteBlock(this.props.index);
+    // this.props.deleteCommand(this.props.index);
   }
   saveSettings() {
     return new Promise((resolve, reject) => {

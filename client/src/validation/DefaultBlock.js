@@ -1,4 +1,4 @@
-const Validator = require("validator");
+// const Validator = require("validator");
 const isEmpty = require("./is-empty");
 module.exports = function validateDefaultBlockFields(fields, state) {
   let errors = {};

@@ -54,7 +54,7 @@ class ActionsContainer extends Component {
 
   openPopup() {
     this.props.setPopupType("COMMAND_SELECT");
-    this.props.setPopupData({ context: this.props.blockContext, contextCommands: this.props.script.json });
+    this.props.setPopupData({ context: this.props.blockContext ? this.props.blockContext + "" : "", contextCommands: this.props.script.json });
   }
   saveScript() {
     this.startSave();
@@ -143,7 +143,7 @@ class ActionsContainer extends Component {
           </div>
         </div>
         <div className="actions-scrollable">
-          <ActionList mapItems={this.props.script.json} droppableId={"droppable-main"} listContext="" />
+          <ActionList mapItems={this.props.script.json} droppableId={"droppable-main"} listContext={""} />
           <div id="add-action" onClick={this.openPopup}>
             <img src={Plus} style={{ width: "100%" }} alt="Add Command" />
           </div>
