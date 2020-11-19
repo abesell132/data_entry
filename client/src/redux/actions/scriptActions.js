@@ -22,9 +22,11 @@ export const saveScript = (script = {}, id) => (dispatch) => {
     let state = store.getState();
     id = state.script.currentScript;
   }
-  axios.post("http://localhost:5000/api/scripts/updateScript", { script, id }).catch((err) => {
-    if (err) throw err;
-  });
+  axios
+    .post("http://localhost:5000/api/scripts/updateScript", { script, id })
+    .catch((err) => {
+      if (err) throw err;
+    });
 };
 
 export const renameScript = (name, id) => (dispatch) => {
@@ -37,7 +39,10 @@ export const executeScript = (id) => (dispatch) => {
   axios
     .post("http://localhost:5000/api/scripts/executeScript", { id })
     .then((res) => {
-      dispatch({ type: "SET_GENERATED_VARIABLES", payload: res.data.variables });
+      dispatch({
+        type: "SET_GENERATED_VARIABLES",
+        payload: res.data.variables,
+      });
       dispatch({ type: "SET_POPUP_TYPE", payload: "" });
     })
     .catch((err) => {
@@ -46,18 +51,22 @@ export const executeScript = (id) => (dispatch) => {
 };
 
 export const queryScripts = () => (dispatch) => {
-  axios.post("http://localhost:5000/api/scripts/getAccountScripts").then((res) => {
-    dispatch({ type: "UPDATE_SCRIPT_LIST", payload: res.data });
-  });
+  axios
+    .post("http://localhost:5000/api/scripts/getAccountScripts")
+    .then((res) => {
+      dispatch({ type: "UPDATE_SCRIPT_LIST", payload: res.data });
+    });
 };
 
 export const getScript = (id) => (dispatch) => {
-  axios.post("http://localhost:5000/api/scripts/getScript", { id }).then((res) => {
-    dispatch({ type: "UPDATE_CURRENT_SCRIPT", payload: id });
-    dispatch({ type: "UPDATE_SCRIPT_NAME", payload: res.data.name });
-    dispatch({ type: "SET_VARIABLES", payload: res.data.variables });
-    dispatch(setCommands(res.data.commands));
-  });
+  axios
+    .post("http://localhost:5000/api/scripts/getScript", { id })
+    .then((res) => {
+      dispatch({ type: "UPDATE_CURRENT_SCRIPT", payload: id });
+      dispatch({ type: "UPDATE_SCRIPT_NAME", payload: res.data.name });
+      dispatch({ type: "SET_VARIABLES", payload: res.data.variables });
+      dispatch(setCommands(res.data.commands));
+    });
 };
 
 export const deleteScript = (id, index) => (dispatch) => {
@@ -83,7 +92,10 @@ export const clearCurrentScript = () => (dispatch) => {
 export const deleteVariable = (variable) => (dispatch) => {
   const state = store.getState();
   axios
-    .post(`http://localhost:5000/api/scripts/deleteVariable`, { variable, scriptID: state.script.currentScript })
+    .post(`http://localhost:5000/api/scripts/deleteVariable`, {
+      variable,
+      scriptID: state.script.currentScript,
+    })
     .then((res) => {
       dispatch({ type: "SET_VARIABLES", payload: res.data });
     })
@@ -95,7 +107,10 @@ export const deleteVariable = (variable) => (dispatch) => {
 export const createNewVariable = (variable) => (dispatch) => {
   const state = store.getState();
   axios
-    .post(`http://localhost:5000/api/scripts/createVariable`, { variable, scriptID: state.script.currentScript })
+    .post(`http://localhost:5000/api/scripts/createVariable`, {
+      variable,
+      scriptID: state.script.currentScript,
+    })
     .then((res) => {
       dispatch({ type: "SET_VARIABLES", payload: res.data });
     })
@@ -106,7 +121,10 @@ export const createNewVariable = (variable) => (dispatch) => {
 export const updateVariable = (variable) => (dispatch) => {
   const state = store.getState();
   axios
-    .post("http://localhost:5000/api/scripts/updateVariable", { variable, scriptID: state.script.currentScript })
+    .post("http://localhost:5000/api/scripts/updateVariable", {
+      variable,
+      scriptID: state.script.currentScript,
+    })
     .then((res) => {
       dispatch({ type: "SET_VARIABLES", payload: res.data });
     })
@@ -120,7 +138,13 @@ export const uploadVariable = (file) => (dispatch) => {
   let fd = new FormData();
   fd.append("file", file);
   axios
-    .post("http://localhost:5000/api/scripts/variable/" + state.script.currentScript + "/" + file.name, fd, config)
+    .post(
+      "http://localhost:5000/api/scripts/variable/" +
+        state.script.currentScript +
+        "/imageUpload",
+      fd,
+      config
+    )
     .then((res) => {
       dispatch({ type: "SET_VARIABLES", payload: res.data });
     })

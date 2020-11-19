@@ -1,7 +1,10 @@
 import React, { Component } from "react";
 import ActionsContainer from "../../layouts/ActionsContainer/ActionsContainer";
 import VariblesContainer from "../../layouts/VariablesContainer/VariablesContainer";
-import { clearCurrentScript, getScript } from "../../redux/actions/scriptActions";
+import {
+  clearCurrentScript,
+  getScript,
+} from "../../redux/actions/scriptActions";
 import "./Script.scss";
 import { connect } from "react-redux";
 
@@ -19,7 +22,6 @@ class App extends Component {
     });
   }
   componentWillUnmount() {
-    console.log("Clearing Current Script");
     this.props.clearCurrentScript();
   }
   render() {
