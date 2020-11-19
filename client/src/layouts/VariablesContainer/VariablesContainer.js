@@ -7,7 +7,10 @@ import Number from "./Types/Number";
 import Array from "./Types/Array";
 
 import { deleteVariable } from "../../redux/actions/scriptActions";
-import { setPopupType, setPopupData } from "../../redux/actions/appStateActions";
+import {
+  setPopupType,
+  setPopupData,
+} from "../../redux/actions/appStateActions";
 
 import "./index.scss";
 
@@ -25,7 +28,7 @@ class VariablesContainer extends Component {
       varArr.map((element, index) => {
         switch (element.type) {
           case "string":
-            return <String element={element} key={index} />;
+            return <String element={element} key={index} index={index} />;
           case "number":
             return <Number element={element} key={index} />;
           case "array":
@@ -42,7 +45,9 @@ class VariablesContainer extends Component {
         <div id="variables-header">
           <button onClick={this.addVariable}>Add Variable</button>
         </div>
-        <div id="variables-content">{mapVariables(this.props.script.variables)}</div>
+        <div id="variables-content">
+          {mapVariables(this.props.script.variables)}
+        </div>
         <div id="generated-content">
           {this.props.script.generated.length !== 0 ? <h3>Generated</h3> : ""}
           {mapVariables(this.props.script.generated)}

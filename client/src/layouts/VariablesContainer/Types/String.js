@@ -1,6 +1,9 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { updateVariable, deleteVariable } from "../../../redux/actions/scriptActions";
+import {
+  updateVariable,
+  deleteVariable,
+} from "../../../redux/actions/scriptActions";
 
 import StringIcon from "../../../assets/imgs/StringIcon.png";
 import GarbageCan from "../../../assets/imgs/garbage-can.png";
@@ -27,8 +30,14 @@ class String extends Component {
         if (!this.state.showSettings) {
           let newVar = {
             id: this.props.element.id,
-            name: this.state.name !== undefined ? this.state.name : this.props.element.name,
-            value: this.state.value !== undefined ? this.state.value : this.props.element.value,
+            name:
+              this.state.name !== undefined
+                ? this.state.name
+                : this.props.element.name,
+            value:
+              this.state.value !== undefined
+                ? this.state.value
+                : this.props.element.value,
             type: this.props.element.type,
           };
           this.props.updateVariable(newVar);
@@ -50,7 +59,11 @@ class String extends Component {
   render() {
     let display = this.state.showSettings ? "block" : "none";
     return (
-      <div className={`VariableWrapper ${this.state.showSettings ? "settings-open" : ""}`}>
+      <div
+        className={`VariableWrapper ${
+          this.state.showSettings ? "settings-open" : ""
+        }`}
+      >
         <div className="variable" onClick={() => this.toggleSettings()}>
           <div className="variable-meta">
             <div className={`file-type ${this.props.element.type}`}>
@@ -58,18 +71,47 @@ class String extends Component {
             </div>
             <div className="file-name">
               <h4>String</h4> {/*Change This*/}
-              <span>{this.state.name !== undefined && this.state.name !== "" ? this.state.name : this.props.element.name}</span>
+              <span>
+                {this.state.name !== undefined && this.state.name !== ""
+                  ? this.state.name
+                  : this.props.element.name}
+              </span>
             </div>
           </div>
           <div className="delete-variable">
-            <img src={GarbageCan} onClick={this.deleteVariable} alt="Delete Variable" />
+            <img
+              src={GarbageCan}
+              onClick={this.deleteVariable}
+              alt="Delete Variable"
+            />
           </div>
         </div>
         <div className="settings" onClick={this.stopProp} style={{ display }}>
+          <div className="variable-id">
+            Variable ID: <span className="selectable">{this.props.index}</span>
+          </div>
           <label>Name</label>
-          <input type="text" name="name" value={this.state.name !== undefined ? this.state.name : this.props.element.name} onChange={this.onChange} />
+          <input
+            type="text"
+            name="name"
+            value={
+              this.state.name !== undefined
+                ? this.state.name
+                : this.props.element.name
+            }
+            onChange={this.onChange}
+          />
           <label>Value</label>
-          <input type="text" name="value" value={this.state.value !== undefined ? this.state.value : this.props.element.value} onChange={this.onChange} />
+          <input
+            type="text"
+            name="value"
+            value={
+              this.state.value !== undefined
+                ? this.state.value
+                : this.props.element.value
+            }
+            onChange={this.onChange}
+          />
         </div>
       </div>
     );
@@ -80,4 +122,6 @@ const mapStateToProps = (state) => ({
   script: state.script,
 });
 
-export default connect(mapStateToProps, { updateVariable, deleteVariable })(String);
+export default connect(mapStateToProps, { updateVariable, deleteVariable })(
+  String
+);

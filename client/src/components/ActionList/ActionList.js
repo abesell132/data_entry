@@ -1,7 +1,10 @@
 import React, { Component } from "react";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { connect } from "react-redux";
-import { reorderCommands, deleteCommand } from "../../redux/actions/commandActions";
+import {
+  reorderCommands,
+  deleteCommand,
+} from "../../redux/actions/commandActions";
 import getElementConfig from "../../CommandBlocks/ElementConfig";
 import LoopBlock from "../../CommandBlocks/LoopBlock";
 import DefaultBlock from "../../CommandBlocks/DefaultBlock";
@@ -27,12 +30,15 @@ class ActionList extends Component {
     if (!result.destination) {
       return;
     }
-    const itemsJSON = reorder(this.props.mapItems, result.source.index, result.destination.index);
+    const itemsJSON = reorder(
+      this.props.mapItems,
+      result.source.index,
+      result.destination.index
+    );
     this.props.reorderCommands(this.props.listContext, itemsJSON);
   }
 
   deleteBlock(index) {
-    console.log(index);
     let items = this.props.mapItems;
     items.splice(index, 1);
     this.props.deleteCommand(this.props.listContext, items);
@@ -46,28 +52,57 @@ class ActionList extends Component {
               {...elementProps}
               commandList={elementProps.commands}
               index={index}
-              blockContext={this.props.listContext !== "" ? this.props.listContext + "." + index : "." + index}
+              blockContext={
+                this.props.listContext !== ""
+                  ? this.props.listContext + "." + index
+                  : "." + index
+              }
               deleteBlock={this.deleteBlock}
             />
           );
         default:
-          return <DefaultBlock {...elementProps} index={index} blockContext={this.props.listContext} deleteBlock={this.deleteBlock} />;
+          return (
+            <DefaultBlock
+              {...elementProps}
+              index={index}
+              blockContext={this.props.listContext}
+              deleteBlock={this.deleteBlock}
+            />
+          );
       }
     };
 
     return (
       <div className="actions-list" onClick={(e) => e.preventDefault()}>
-        <DragDropContext onDragEnd={this.onDragEnd} onDragUpdate={this.onDragUpdate}>
-          <Droppable droppableId={this.props.droppableId} type={this.props.droppableId}>
+        <DragDropContext
+          onDragEnd={this.onDragEnd}
+          onDragUpdate={this.onDragUpdate}
+        >
+          <Droppable
+            droppableId={this.props.droppableId}
+            type={this.props.droppableId}
+          >
             {(provided) => (
               <div ref={provided.innerRef}>
                 {this.props.mapItems.map((item, index) => {
                   let elementProps = getElementConfig(item).actionBlockProps;
                   return (
-                    <Draggable key={item.id} draggableId={item.id} index={index} className="action-draggable">
+                    <Draggable
+                      key={item.id}
+                      draggableId={item.id}
+                      index={index}
+                      className="action-draggable"
+                    >
                       {(provided) => (
-                        <div ref={provided.innerRef} {...provided.draggableProps}>
-                          {<div {...provided.dragHandleProps}>{getBlockType(item.type, elementProps, index)}</div>}
+                        <div
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                        >
+                          {
+                            <div {...provided.dragHandleProps}>
+                              {getBlockType(item.type, elementProps, index)}
+                            </div>
+                          }
                         </div>
                       )}
                     </Draggable>
@@ -87,4 +122,6 @@ const mapStateToProps = (state) => ({
   script: state.script,
 });
 
-export default connect(mapStateToProps, { reorderCommands, deleteCommand })(ActionList);
+export default connect(mapStateToProps, { reorderCommands, deleteCommand })(
+  ActionList
+);

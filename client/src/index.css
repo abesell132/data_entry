@@ -10,10 +10,11 @@ body * {
   -webkit-user-select: none; /* Chrome all / Safari all */
   -moz-user-select: none; /* Firefox all */
   -ms-user-select: none; /* IE 10+ */
-  user-select: none;
+  user-select: revert;
 }
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
 }
 a {
   text-decoration: none;
@@ -53,4 +54,8 @@ label {
   display: block;
   margin-top: 5px;
   font-size: 14px;
+}
+
+.selectable {
+  user-select: revert !important;
 }

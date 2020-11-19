@@ -42,10 +42,11 @@ export const updateCommand = (context, slug, value) => (dispatch) => {
 export const setCommands = (commands) => (dispatch) => {
   dispatch({ type: "UPDATE_COMMAND_JSON", payload: commands });
 };
-export const addCommands = (context, commands, contextCommands) => (dispatch) => {
+export const addCommands = (context, commands, contextCommands) => (
+  dispatch
+) => {
   const state = store.getState();
   let newState = state.script;
-  console.log(context);
   for (let a = 0; a < commands.length; a++) {
     let payload = getElementConfig(commands[a]).addCommandPayload;
     contextCommands.push(payload);

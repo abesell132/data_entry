@@ -13,6 +13,8 @@ const getDefaultAccepts = (name) => {
   switch (name) {
     case "Load URL":
       return ["string", "number"];
+    default:
+      return [];
   }
 };
 
@@ -45,7 +47,11 @@ class DefaultBlock extends Component {
       validateDefaultBlockFields(this.props.fields, this.state)
         .then((values) => {
           Object.keys(values).map((key, index) => {
-            this.props.updateCommand(this.props.blockContext + "." + this.props.index, key, values[key]);
+            this.props.updateCommand(
+              this.props.blockContext + "." + this.props.index,
+              key,
+              values[key]
+            );
             return 1;
           });
           this.setState({ errors: {}, saved: true });
@@ -66,7 +72,9 @@ class DefaultBlock extends Component {
   }
 
   setDynamic(index, field, value) {
-    let oldState = this.state[field.slug] ? this.state[field.slug] : this.props.fields[index].value;
+    let oldState = this.state[field.slug]
+      ? this.state[field.slug]
+      : this.props.fields[index].value;
     this.setState({
       [field.slug]: oldState + value,
       saved: false,
@@ -87,18 +95,56 @@ class DefaultBlock extends Component {
                 <img src={Warning} alt="Not Saved" />
               </span>
             )}
-            <img src={GarbageCan} className="delete-command" onClick={this.deleteBlock} alt="Delete Block" />
+            <img
+              src={GarbageCan}
+              className="delete-command"
+              onClick={this.deleteBlock}
+              alt="Delete Block"
+            />
           </div>
         </div>
-        <div className="settings" onClick={(e) => e.stopPropagation()} style={{ display }}>
+        <div
+          className="settings"
+          onClick={(e) => e.stopPropagation()}
+          style={{ display }}
+        >
           {this.props.fields.map((field, index) => (
             <div key={index}>
-              {field.label ? <label htmlFor={field.slug}>{field.label}</label> : ""}
-              {field.slug in this.state.errors ? <div className="field-error">{this.state.errors[field.slug]}</div> : ""}
+              {field.label ? (
+                <label htmlFor={field.slug}>{field.label}</label>
+              ) : (
+                ""
+              )}
+              {field.slug in this.state.errors ? (
+                <div className="field-error">
+                  {this.state.errors[field.slug]}
+                </div>
+              ) : (
+                ""
+              )}
 
               <div className="dynamic-fill">
-                {field.inputType ? <input type={field.inputType} name={field.slug} value={this.state[field.slug] ? this.state[field.slug] : field.value} onChange={this.onChange} /> : ""}
-                <DynamicFill field={field} index={index} context={this.props.blockContext} setDynamic={this.setDynamic} accepts={getDefaultAccepts(this.props.name)} />
+                {field.inputType ? (
+                  <input
+                    type={field.inputType}
+                    name={field.slug}
+                    value={
+                      this.state[field.slug]
+                        ? this.state[field.slug]
+                        : field.value
+                    }
+                    onChange={this.onChange}
+                  />
+                ) : (
+                  ""
+                )}
+                <DynamicFill
+                  field={field}
+                  index={index}
+                  context={this.props.blockContext}
+                  setDynamic={this.setDynamic}
+                  accepts={getDefaultAccepts(this.props.name)}
+                />
               </div>
             </div>
           ))}
@@ -115,7 +161,8 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   deleteCommand: (id) => dispatch(deleteCommand(id)),
-  updateCommand: (blockContext, field, value) => dispatch(updateCommand(blockContext, field, value)),
+  updateCommand: (blockContext, field, value) =>
+    dispatch(updateCommand(blockContext, field, value)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(DefaultBlock);

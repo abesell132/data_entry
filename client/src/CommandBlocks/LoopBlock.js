@@ -16,6 +16,8 @@ const getDefaultAccepts = (name) => {
   switch (name) {
     case "Load URL":
       return ["string", "number"];
+    default:
+      return [];
   }
 };
 
@@ -46,8 +48,16 @@ class LoopBlock extends Component {
   }
   saveSettings() {
     return new Promise((resolve, reject) => {
-      this.props.updateCommand(this.props.blockContext, "array", this.state.array ? this.state.array.split(",") : this.props.array);
-      this.props.updateCommand(this.props.blockContext, "commands", this.props.commands);
+      this.props.updateCommand(
+        this.props.blockContext,
+        "array",
+        this.state.array ? this.state.array.split(",") : this.props.array
+      );
+      this.props.updateCommand(
+        this.props.blockContext,
+        "commands",
+        this.props.commands
+      );
       resolve();
     });
   }
@@ -62,7 +72,9 @@ class LoopBlock extends Component {
   }
 
   setDynamic(index, field, value) {
-    let oldState = this.state[field.slug] ? this.state[field.slug] : this.props.fields[index].value;
+    let oldState = this.state[field.slug]
+      ? this.state[field.slug]
+      : this.props.fields[index].value;
     this.setState({
       [field.slug]: oldState + value,
       saved: false,
@@ -72,7 +84,10 @@ class LoopBlock extends Component {
   addCommand() {
     let commands = this.props.commands;
     this.props.setPopupType("COMMAND_SELECT");
-    this.props.setPopupData({ context: this.props.blockContext + ".commands", contextCommands: commands });
+    this.props.setPopupData({
+      context: this.props.blockContext + ".commands",
+      contextCommands: commands,
+    });
   }
 
   render() {
@@ -89,27 +104,69 @@ class LoopBlock extends Component {
                 <img src={Warning} alt="Not Saved" />
               </span>
             )}
-            <img src={GarbageCan} className="delete-command" onClick={this.deleteBlock} alt="Delete Block" />
+            <img
+              src={GarbageCan}
+              className="delete-command"
+              onClick={this.deleteBlock}
+              alt="Delete Block"
+            />
           </div>
         </div>
-        <div className="settings" onClick={(e) => e.stopPropagation()} style={{ display }}>
+        <div
+          className="settings"
+          onClick={(e) => e.stopPropagation()}
+          style={{ display }}
+        >
           {this.props.fields.map((field, index) => (
             <div key={index}>
-              {field.label ? <label htmlFor={field.slug}>{field.label}</label> : ""}
-              {field.slug in this.state.errors ? <div className="field-error">{this.state.errors[field.slug]}</div> : ""}
+              {field.label ? (
+                <label htmlFor={field.slug}>{field.label}</label>
+              ) : (
+                ""
+              )}
+              {field.slug in this.state.errors ? (
+                <div className="field-error">
+                  {this.state.errors[field.slug]}
+                </div>
+              ) : (
+                ""
+              )}
 
               <div className="dynamic-fill">
-                {field.inputType ? <input type={field.inputType} name={field.slug} value={this.state[field.slug] ? this.state[field.slug] : this.props.array.join()} onChange={this.onChange} /> : ""}
-                <DynamicFill field={field} index={index} context={this.props.blockContext} setDynamic={this.setDynamic} accepts={getDefaultAccepts(this.props.name)} />
+                {field.inputType ? (
+                  <input
+                    type={field.inputType}
+                    name={field.slug}
+                    value={
+                      this.state[field.slug]
+                        ? this.state[field.slug]
+                        : this.props.array.join()
+                    }
+                    onChange={this.onChange}
+                  />
+                ) : (
+                  ""
+                )}
+                <DynamicFill
+                  field={field}
+                  index={index}
+                  context={this.props.blockContext}
+                  setDynamic={this.setDynamic}
+                  accepts={getDefaultAccepts(this.props.name)}
+                />
               </div>
             </div>
           ))}
           <label>Commands</label>
           <div className="loop-commands">
-            <ActionList mapItems={this.props.commands} droppableId={"droppable-asdf"} listContext={this.props.blockContext + ".commands"} />
+            <ActionList
+              mapItems={this.props.commands}
+              droppableId={"droppable-asdf"}
+              listContext={this.props.blockContext + ".commands"}
+            />
           </div>
           <div className="add-command" onClick={this.addCommand}>
-            <img src={PlusIcon} width="24" />
+            <img src={PlusIcon} width="24" alt="Add Command" />
           </div>
         </div>
       </div>
@@ -124,7 +181,8 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   deleteCommand: (id) => dispatch(deleteCommand(id)),
-  updateCommand: (blockContext, field, value) => dispatch(updateCommand(blockContext, field, value)),
+  updateCommand: (blockContext, field, value) =>
+    dispatch(updateCommand(blockContext, field, value)),
   setPopupType: (type) => dispatch(setPopupType(type)),
   setPopupData: (data) => dispatch(setPopupData(data)),
 });
