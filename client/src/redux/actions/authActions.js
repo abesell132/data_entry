@@ -20,13 +20,10 @@ export const loginUser = (userData) => (dispatch) => {
     .then((res) => {
       // Save to local storage
       const { token } = res.data;
-
       localStorage.setItem("jwtToken", token);
-
       setAuthToken(token);
 
       //Decode token to get user data
-
       const decoded = jwt_decode(token);
 
       //Set current user

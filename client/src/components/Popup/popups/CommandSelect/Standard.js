@@ -20,7 +20,11 @@ class Standard extends Component {
     e.stopPropagation();
   }
   onClick(command) {
-    this.props.addCommands(this.props.appState.popup_data.context, [command], this.props.appState.popup_data.contextCommands);
+    this.props.addCommands(
+      this.props.appState.popup_data.context,
+      [command],
+      this.props.appState.popup_data.contextCommands
+    );
     this.props.closePopup();
   }
   render() {
@@ -44,19 +48,25 @@ class Standard extends Component {
             <img src={QuestionMark} alt="More Information" />
           </div>
         </div>
-        <div onClick={() => this.onClick({ type: "SET_TIMEOUT", duration: "" })}>
+        <div
+          onClick={() => this.onClick({ type: "SET_TIMEOUT", duration: "" })}
+        >
           <div>Set Timeout</div>
           <div className="action-question-mark">
             <img src={QuestionMark} alt="More Information" />
           </div>
         </div>
-        <div onClick={() => this.onClick({ type: "SUBMIT_FORM", selector: "" })}>
+        <div
+          onClick={() => this.onClick({ type: "SUBMIT_FORM", selector: "" })}
+        >
           <div>Submit Form</div>
           <div className="action-question-mark">
             <img src={QuestionMark} alt="More Information" />
           </div>
         </div>
-        <div onClick={() => this.onClick({ type: "TYPE", selector: "", text: "" })}>
+        <div
+          onClick={() => this.onClick({ type: "TYPE", selector: "", text: "" })}
+        >
           <div>Type</div>
           <div className="action-question-mark">
             <img src={QuestionMark} alt="More Information" />

@@ -35,7 +35,7 @@ const commandAPI = {
     await page.waitForTimeout(parseInt(command.duration));
   },
 
-  // @desc      Submits Form on Page, Wait until network is idle
+  // @desc      Submits Form on Page, Wait until network is idle to continue
   // @params    Page {Object} - Puppeteer Page
   //            command {Object} - command data
   //                @requires   type {String}, selector {String::DOM_Selector} - Form Selector

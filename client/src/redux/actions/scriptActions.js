@@ -3,6 +3,8 @@ import { setCommands } from "./commandActions";
 import store from "../store";
 import isEmpty from "../../validation/is-empty";
 
+// @desc      Send new script request, from response, add new script to store
+// @params    name {String} - Default Script Name
 export const addScript = (name) => (dispatch) => {
   const state = store.getState();
   let newScript = state.auth.accountScripts;
@@ -17,6 +19,9 @@ export const addScript = (name) => (dispatch) => {
     });
 };
 
+// @desc    Sends script to Server for saving/updating
+// @params    script {Object} - Script object to save/update
+//            id - Script Id to save/update
 export const saveScript = (script = {}, id) => (dispatch) => {
   if (isEmpty(id)) {
     let state = store.getState();
@@ -29,11 +34,16 @@ export const saveScript = (script = {}, id) => (dispatch) => {
     });
 };
 
+// @desc      Updates script name in store, saves script to server
+// @params    name {String} - New Script Name
+//            id - Script Id to update
 export const renameScript = (name, id) => (dispatch) => {
   dispatch({ type: "UPDATE_SCRIPT_NAME", payload: name });
   dispatch(saveScript({ name }, id));
 };
 
+// @desc      Resets generated variables in store, send req to server to execute, upon response, add generated variables, and remove close popup
+// @params    id - Script Id to execute
 export const executeScript = (id) => (dispatch) => {
   dispatch({ type: "CLEAR_GENERATED_VARIABLES" });
   axios
@@ -50,6 +60,7 @@ export const executeScript = (id) => (dispatch) => {
     });
 };
 
+// @desc      Query server for account scripts, update script list with response data
 export const queryScripts = () => (dispatch) => {
   axios
     .post("http://localhost:5000/api/scripts/getAccountScripts")
@@ -58,6 +69,8 @@ export const queryScripts = () => (dispatch) => {
     });
 };
 
+// @desc      Get single script data from server; update script id, name, variables, and commands in store
+// @params    id - ID of the script to fetch
 export const getScript = (id) => (dispatch) => {
   axios
     .post("http://localhost:5000/api/scripts/getScript", { id })
@@ -69,6 +82,9 @@ export const getScript = (id) => (dispatch) => {
     });
 };
 
+// @desc      Delete script request to server, on successful deletion, remove index of script from store
+// @params    id - Script Id to delete
+//            index {Integer} - Index position of the script staged for deletion in the Account Script List
 export const deleteScript = (id, index) => (dispatch) => {
   const state = store.getState();
   let newScript = state.auth.accountScripts;
@@ -83,12 +99,17 @@ export const deleteScript = (id, index) => (dispatch) => {
     });
 };
 
+// @desc      Clears all data pertaining to current script in store
 export const clearCurrentScript = () => (dispatch) => {
   dispatch({ type: "UPDATE_CURRENT_SCRIPT", payload: "" });
-  dispatch({ type: "UPDATE_COMMAND_LIST", payload: [] });
+  dispatch({ type: "UPDATE_SCRIPT_NAME", payload: "" });
   dispatch({ type: "UPDATE_COMMAND_JSON", payload: [] });
+  dispatch({ type: "SET_VARIABLES", payload: [] });
 };
 
+// @desc      Sends variable to server for deletion, server sends back new variable list which replaces current variable list in store
+// @params    variable {Object} - Variable object to delete
+//                @required    ID;
 export const deleteVariable = (variable) => (dispatch) => {
   const state = store.getState();
   axios
@@ -104,6 +125,8 @@ export const deleteVariable = (variable) => (dispatch) => {
     });
 };
 
+// @desc      Add variable to script, set new variable list on response
+// @params    variable {Object} - Variable object to Add
 export const createNewVariable = (variable) => (dispatch) => {
   const state = store.getState();
   axios
@@ -118,6 +141,9 @@ export const createNewVariable = (variable) => (dispatch) => {
       if (err) throw err;
     });
 };
+
+// @desc      Updates variable on server, set new variable list on response
+// @params    variable {Object} - Variable object to Add
 export const updateVariable = (variable) => (dispatch) => {
   const state = store.getState();
   axios
@@ -132,6 +158,10 @@ export const updateVariable = (variable) => (dispatch) => {
       if (err) throw err;
     });
 };
+
+// @desc      uploads variable file to server, set new variable list on response
+// @params    file {Object?} - Variable object of image
+// @see       npm Dropzone package for more information
 export const uploadVariable = (file) => (dispatch) => {
   const state = store.getState();
   let config = { headers: { "Content-Type": "multipart/form-data" } };

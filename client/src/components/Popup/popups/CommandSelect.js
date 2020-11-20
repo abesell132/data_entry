@@ -28,7 +28,11 @@ class CommandSelect extends Component {
     });
   }
   onClick(command) {
-    this.props.addCommands(this.props.appState.popup_data.context, [command], this.props.appState.popup_data.contextCommands);
+    this.props.addCommands(
+      this.props.appState.popup_data.context,
+      [command],
+      this.props.appState.popup_data.contextCommands
+    );
     this.props.closePopup();
   }
   render() {
@@ -47,13 +51,21 @@ class CommandSelect extends Component {
                 <img src={QuestionMark} alt="More Information" />
               </div>
             </div>
-            <div onClick={() => this.onClick({ type: "ARRAY_LOOP", array: [], commands: [] })}>
+            <div
+              onClick={() =>
+                this.onClick({ type: "ARRAY_LOOP", array: [], commands: [] })
+              }
+            >
               <div>Loop Block</div>
               <div className="action-question-mark">
                 <img src={QuestionMark} alt="More Information" />
               </div>
             </div>
-            <div onClick={() => this.onClick({ type: "TYPE", selector: "", text: "" })}>
+            <div
+              onClick={() =>
+                this.onClick({ type: "TYPE", selector: "", text: "" })
+              }
+            >
               <div>DOM Tools</div>
               <div className="action-question-mark">
                 <img src={QuestionMark} alt="More Information" />
@@ -78,4 +90,6 @@ const mapStateToProps = (state) => ({
   commands: state.commands,
 });
 
-export default connect(mapStateToProps, { closePopup, addCommands })(CommandSelect);
+export default connect(mapStateToProps, { closePopup, addCommands })(
+  CommandSelect
+);

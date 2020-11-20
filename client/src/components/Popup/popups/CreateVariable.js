@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { closePopup } from "../../../redux/actions/appStateActions";
 import { v4 as uuidv4 } from "uuid";
-import { addScript, uploadVariable, createNewVariable } from "../../../redux/actions/scriptActions";
+import { createNewVariable } from "../../../redux/actions/scriptActions";
 import isEmpty from "../../../validation/is-empty";
 
 import File from "./CreateVariableTypes/File";
@@ -78,7 +78,11 @@ class CreateVariable extends Component {
         <section>
           <div>
             <h3>{this.state.error}</h3>
-            <div style={{ textAlign: "center" }} className="pointer" onClick={this.clearError}>
+            <div
+              style={{ textAlign: "center" }}
+              className="pointer"
+              onClick={this.clearError}
+            >
               Go Back
             </div>
           </div>
@@ -118,7 +122,12 @@ class CreateVariable extends Component {
     }
 
     return (
-      <div id="popup" className="variable-upload" style={{ display: this.props.appState.popup_visible }} onClick={this.closePopup}>
+      <div
+        id="popup"
+        className="variable-upload"
+        style={{ display: this.props.appState.popup_visible }}
+        onClick={this.closePopup}
+      >
         <div id="popup-container" onClick={this.stopProp}>
           <div id="popup-content" className="var-types">
             {content}
@@ -134,4 +143,7 @@ const mapStateToProps = (state) => ({
   commands: state.commands,
 });
 
-export default connect(mapStateToProps, { closePopup, addScript, uploadVariable, createNewVariable })(CreateVariable);
+export default connect(mapStateToProps, {
+  closePopup,
+  createNewVariable,
+})(CreateVariable);

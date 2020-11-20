@@ -1,6 +1,9 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { deleteCommand, updateCommand } from "../redux/actions/commandActions";
+import {
+  updateCommandList,
+  updateCommand,
+} from "../redux/actions/commandActions";
 
 import DynamicFill from "../components/DynamicFill/DynamicFill";
 import validateDefaultBlockFields from "../validation/DefaultBlock";
@@ -40,7 +43,6 @@ class DefaultBlock extends Component {
   deleteBlock(e) {
     e.stopPropagation();
     this.props.deleteBlock(this.props.index);
-    // this.props.deleteCommand(this.props.index);
   }
   saveSettings() {
     return new Promise((resolve, reject) => {
@@ -160,7 +162,7 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  deleteCommand: (id) => dispatch(deleteCommand(id)),
+  updateCommandList: (id) => dispatch(updateCommandList(id)),
   updateCommand: (blockContext, field, value) =>
     dispatch(updateCommand(blockContext, field, value)),
 });

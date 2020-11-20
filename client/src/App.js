@@ -17,6 +17,9 @@ import PrivateRoute from "./pages/Authentication/PrivateRoute";
 import { setCurrentUser } from "./redux/actions/authActions";
 import { logUserOut } from "./redux/actions/authActions";
 
+// Check Local Storage for Auth Token
+// If one exists, set current user data
+// If key is expired, log the user out and redirect to login page.
 if (localStorage.jwtToken) {
   // Set auth token header auth
   setAuthToken(localStorage.jwtToken);
@@ -44,7 +47,6 @@ function App() {
             <PrivateRoute path="/app/:id" component={AppPage} />
             <PrivateRoute path="/" component={Home} exact />
           </Switch>
-
           <Route path="/register" component={Register} />
           <Route path="/login" component={Login} />
         </div>

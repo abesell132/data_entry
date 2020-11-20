@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { closePopup } from "../../../redux/actions/appStateActions";
-import { addScript, uploadVariable, executeScript } from "../../../redux/actions/scriptActions";
 import exclamationMark from "../../../assets/imgs/exclamation-mark.png";
 import "./css/ExecuteCommands.scss";
 
@@ -20,7 +19,12 @@ class CommandErrors extends Component {
 
   render() {
     return (
-      <div id="popup" className="execute-confirm" style={{ display: this.props.appState.popup_visible }} onClick={this.closePopup}>
+      <div
+        id="popup"
+        className="execute-confirm"
+        style={{ display: this.props.appState.popup_visible }}
+        onClick={this.closePopup}
+      >
         <div id="popup-container" onClick={this.stopProp}>
           <div id="popup-content">
             <section>
@@ -44,4 +48,6 @@ const mapStateToProps = (state) => ({
   script: state.script,
 });
 
-export default connect(mapStateToProps, { closePopup, addScript, uploadVariable, executeScript })(CommandErrors);
+export default connect(mapStateToProps, {
+  closePopup,
+})(CommandErrors);
