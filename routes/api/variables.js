@@ -57,17 +57,11 @@ let extractVariables = (value) => {
     endIndex++;
   }
   for (let a = 0; a < varIndices.length; a++) {
-    retVal.variables.push([
-      value.slice(varIndices[a][0] + 1, varIndices[a][1]),
-      varIndices[a][0],
-    ]);
+    retVal.variables.push([value.slice(varIndices[a][0] + 1, varIndices[a][1]), varIndices[a][0]]);
   }
 
   for (let a = varIndices.length - 1; a >= 0; a--) {
-    retVal.value = retVal.value.replace(
-      retVal.value.substring(varIndices[a][0], varIndices[a][1] + 1),
-      ""
-    );
+    retVal.value = retVal.value.replace(retVal.value.substring(varIndices[a][0], varIndices[a][1] + 1), "");
     var res = retVal.value.split("");
     res.splice(varIndices[a][0], varIndices[a][0] - varIndices[a][1] + 1);
     let value = res.join("");

@@ -12,14 +12,15 @@ const _ = require("lodash");
 // @params  scriptID {String} - ScriptID
 const unlinkGeneratedVariables = (write_path) => {
   const directory = write_path + "generated";
-  fs.readdir(directory, (err, files) => {
-    if (err) throw err;
-    for (const file of files) {
-      fs.unlink(path.join(directory, file), (err) => {
-        if (err) throw err;
-      });
-    }
-  });
+  if (fs.existsSync(directory))
+    fs.readdir(directory, (err, files) => {
+      if (err) throw err;
+      for (const file of files) {
+        fs.unlink(path.join(directory, file), (err) => {
+          if (err) throw err;
+        });
+      }
+    });
 };
 
 // @desc      Checks if image exists in response.variables array
@@ -52,7 +53,7 @@ const init_page = async (page) => {
 // @desc    Executes Array of Commands, command array may be manipulated by command results and conditions
 // @params  commands {Array} - Array of commands to be executed
 //          id {String} - Script ID
-const executeCommands = async (commands, id) => {
+const executeCommands = async (commands, id, script) => {
   // Launch Browser
   const browser = await puppeteer.launch();
   // Create New Page

@@ -26,6 +26,17 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+if (process.argv[2] !== "dev") {
+  console.log("Launching in Production Mode");
+  app.use(express.static(path.join(__dirname, "client/build")));
+
+  app.get("/", function (req, res) {
+    res.sendFile(path.join(__dirname, "client/build", "index.html"));
+  });
+} else {
+  console.log("Lanching in Development Mode");
+}
+
 // Route API Requests
 app.use("/api/scripts", scripts);
 app.use("/api/users", users);

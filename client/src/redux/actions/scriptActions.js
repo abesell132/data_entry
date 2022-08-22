@@ -9,7 +9,7 @@ export const addScript = (name) => (dispatch) => {
   const state = store.getState();
   let newScript = state.auth.accountScripts;
   axios
-    .post("http://localhost:5000/api/scripts/addScript", { name })
+    .post("/api/scripts/addScript", { name })
     .then((res) => {
       newScript.push(res.data);
       dispatch({ type: "UPDATE_SCRIPT_LIST", payload: newScript });
@@ -22,17 +22,17 @@ export const addScript = (name) => (dispatch) => {
 // @desc    Sends script to Server for saving/updating
 // @params    script {Object} - Script object to save/update
 //            id - Script Id to save/update
-export const saveScript = (script = {}, id) => (dispatch) => {
-  if (isEmpty(id)) {
-    let state = store.getState();
-    id = state.script.currentScript;
-  }
-  axios
-    .post("http://localhost:5000/api/scripts/updateScript", { script, id })
-    .catch((err) => {
+export const saveScript =
+  (script = {}, id) =>
+  (dispatch) => {
+    if (isEmpty(id)) {
+      let state = store.getState();
+      id = state.script.currentScript;
+    }
+    axios.post("/api/scripts/updateScript", { script, id }).catch((err) => {
       if (err) throw err;
     });
-};
+  };
 
 // @desc      Updates script name in store, saves script to server
 // @params    name {String} - New Script Name
@@ -47,7 +47,7 @@ export const renameScript = (name, id) => (dispatch) => {
 export const executeScript = (id) => (dispatch) => {
   dispatch({ type: "CLEAR_GENERATED_VARIABLES" });
   axios
-    .post("http://localhost:5000/api/scripts/executeScript", { id })
+    .post("/api/scripts/executeScript", { id })
     .then((res) => {
       dispatch({
         type: "SET_GENERATED_VARIABLES",
@@ -62,24 +62,20 @@ export const executeScript = (id) => (dispatch) => {
 
 // @desc      Query server for account scripts, update script list with response data
 export const queryScripts = () => (dispatch) => {
-  axios
-    .post("http://localhost:5000/api/scripts/getAccountScripts")
-    .then((res) => {
-      dispatch({ type: "UPDATE_SCRIPT_LIST", payload: res.data });
-    });
+  axios.post("/api/scripts/getAccountScripts").then((res) => {
+    dispatch({ type: "UPDATE_SCRIPT_LIST", payload: res.data });
+  });
 };
 
 // @desc      Get single script data from server; update script id, name, variables, and commands in store
 // @params    id - ID of the script to fetch
 export const getScript = (id) => (dispatch) => {
-  axios
-    .post("http://localhost:5000/api/scripts/getScript", { id })
-    .then((res) => {
-      dispatch({ type: "UPDATE_CURRENT_SCRIPT", payload: id });
-      dispatch({ type: "UPDATE_SCRIPT_NAME", payload: res.data.name });
-      dispatch({ type: "SET_VARIABLES", payload: res.data.variables });
-      dispatch(setCommands(res.data.commands));
-    });
+  axios.post("/api/scripts/getScript", { id }).then((res) => {
+    dispatch({ type: "UPDATE_CURRENT_SCRIPT", payload: id });
+    dispatch({ type: "UPDATE_SCRIPT_NAME", payload: res.data.name });
+    dispatch({ type: "SET_VARIABLES", payload: res.data.variables });
+    dispatch(setCommands(res.data.commands));
+  });
 };
 
 // @desc      Delete script request to server, on successful deletion, remove index of script from store
@@ -89,7 +85,7 @@ export const deleteScript = (id, index) => (dispatch) => {
   const state = store.getState();
   let newScript = state.auth.accountScripts;
   axios
-    .post("http://localhost:5000/api/scripts/deleteScript", { id })
+    .post("/api/scripts/deleteScript", { id })
     .then(() => {
       newScript.splice(index, 1);
       dispatch({ type: "UPDATE_SCRIPT_LIST", payload: newScript });
@@ -113,7 +109,7 @@ export const clearCurrentScript = () => (dispatch) => {
 export const deleteVariable = (variable) => (dispatch) => {
   const state = store.getState();
   axios
-    .post(`http://localhost:5000/api/scripts/deleteVariable`, {
+    .post(`/api/scripts/deleteVariable`, {
       variable,
       scriptID: state.script.currentScript,
     })
@@ -130,7 +126,7 @@ export const deleteVariable = (variable) => (dispatch) => {
 export const createNewVariable = (variable) => (dispatch) => {
   const state = store.getState();
   axios
-    .post(`http://localhost:5000/api/scripts/createVariable`, {
+    .post(`/api/scripts/createVariable`, {
       variable,
       scriptID: state.script.currentScript,
     })
@@ -147,7 +143,7 @@ export const createNewVariable = (variable) => (dispatch) => {
 export const updateVariable = (variable) => (dispatch) => {
   const state = store.getState();
   axios
-    .post("http://localhost:5000/api/scripts/updateVariable", {
+    .post("/api/scripts/updateVariable", {
       variable,
       scriptID: state.script.currentScript,
     })
@@ -168,13 +164,7 @@ export const uploadVariable = (file) => (dispatch) => {
   let fd = new FormData();
   fd.append("file", file);
   axios
-    .post(
-      "http://localhost:5000/api/scripts/variable/" +
-        state.script.currentScript +
-        "/imageUpload",
-      fd,
-      config
-    )
+    .post("/api/scripts/variable/" + state.script.currentScript + "/imageUpload", fd, config)
     .then((res) => {
       dispatch({ type: "SET_VARIABLES", payload: res.data });
     })

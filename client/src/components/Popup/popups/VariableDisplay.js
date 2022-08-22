@@ -31,13 +31,18 @@ class VariableDisplay extends Component {
   render() {
     let popup_data = this.props.appState.popup_data;
     return (
-      <div id="popup" className="variable-display" style={{ display: this.props.appState.popup_visible }} onClick={this.props.closePopup}>
+      <div
+        id="popup"
+        className="variable-display"
+        style={{ display: this.props.appState.popup_visible }}
+        onClick={this.props.closePopup}
+      >
         <div id="popup-container" onClick={this.stopProp}>
           <div id="popup-content" className="image">
             <img
-              src={`http://localhost:5000/api/scripts/variable/${this.props.script.currentScript}/${popup_data.generated ? "generated" : "uploaded"}/${
-                popup_data.generated ? popup_data.name : popup_data.id
-              }`}
+              src={`/api/scripts/variable/${this.props.script.currentScript}/${
+                popup_data.generated ? "generated" : "uploaded"
+              }/${popup_data.generated ? popup_data.name : popup_data.id}`}
               alt="Variable Display Popup"
             />
           </div>

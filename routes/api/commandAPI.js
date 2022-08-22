@@ -32,7 +32,10 @@ const commandAPI = {
   //            command {Object} - command data
   //                @requires   type {String}, duration {Number} - Time in MS
   set_timeout: async (page, command) => {
-    await page.waitForTimeout(parseInt(command.duration));
+    const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+    await console.log("Sleeping for " + command.duration + "ms");
+    await sleep(command.duration);
+    await console.log("Waking up for " + command.duration + "ms");
   },
 
   // @desc      Submits Form on Page, Wait until network is idle to continue
