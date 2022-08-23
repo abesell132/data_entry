@@ -55,7 +55,7 @@ const init_page = async (page) => {
 //          id {String} - Script ID
 const executeCommands = async (commands, id, script) => {
   // Launch Browser
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch({ args: ["--no-sandbox"] });
   // Create New Page
   const page = await browser.newPage();
   await init_page(page);
