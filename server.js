@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const passport = require("passport");
 const bodyParser = require("body-parser");
 const cors = require("cors");
-
+const path = require("path");
 // Load express router files
 const users = require("./routes/api/users");
 const scripts = require("./routes/api/scripts");
@@ -41,4 +41,4 @@ if (process.argv[2] !== "dev") {
 app.use("/api/scripts", scripts);
 app.use("/api/users", users);
 
-app.listen(5000, () => console.log(`Server running on port ${5000}`));
+app.listen(5500, () => console.log(`Server running on port ${5000}`));
